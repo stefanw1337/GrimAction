@@ -50,8 +50,7 @@ if ($LASTEXITCODE -ne 0) { throw "Self-contained injector self-tests exited with
 Assert-GameClosed 'staging'
 $bin = Join-Path $stage 'bin'
 $settingsDir = Join-Path $stage 'settings'
-$reshadeDir = Join-Path $stage 'extras\reshade'
-New-Item -ItemType Directory -Force -Path $bin, $settingsDir, $reshadeDir, (Join-Path $stage 'logs') | Out-Null
+New-Item -ItemType Directory -Force -Path $bin, $settingsDir, (Join-Path $stage 'logs') | Out-Null
 Copy-Item -LiteralPath $publishedInjector -Destination $bin
 Copy-Item -LiteralPath (Join-Path $release 'gdtpc_runtime_collision.dll') -Destination $bin
 Copy-Item -LiteralPath (Join-Path $projectRoot 'package\Start-GrimAction.ps1') -Destination $bin
@@ -59,16 +58,10 @@ Copy-Item -LiteralPath (Join-Path $projectRoot 'package\Stop-GrimAction.ps1') -D
 Copy-Item -LiteralPath (Join-Path $projectRoot 'package\Start GrimAction.cmd') -Destination $stage
 Copy-Item -LiteralPath (Join-Path $projectRoot 'package\Stop GrimAction.cmd') -Destination $stage
 Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\PLAYER_GUIDE.md') -Destination (Join-Path $stage 'README.md')
+Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\CURSOR_TEST.md') -Destination (Join-Path $stage 'TEST-MUSEPEKER.md')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\ANTIVIRUS.md') -Destination (Join-Path $stage 'ANTIVIRUS.md')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSE') -Destination (Join-Path $stage 'LICENSE.txt')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'THIRD-PARTY-NOTICES.txt') -Destination $stage
-Copy-Item -LiteralPath (Join-Path $projectRoot 'extras\reshade\ThirdPersonDot.fx') -Destination $reshadeDir
-$cursorDir = Join-Path $stage 'extras\dot-cursor'
-New-Item -ItemType Directory -Force -Path $cursorDir | Out-Null
-foreach ($name in 'Set-HiddenHandCursor.ps1', 'Dot Cursor.cmd', 'Restore Hand Cursor.cmd') {
-    Copy-Item -LiteralPath (Join-Path $projectRoot "extras\hidden-hand-cursor\$name") -Destination $cursorDir
-}
-
 # Settings are the release's live-accepted file with a short header; the player may edit them, so they are not hashed.
 $utf8 = [System.Text.UTF8Encoding]::new($false)
 $settingsHeader = "; GrimAction settings. Edit values, save, then run Start GrimAction. Every key must stay present.`r`n; Ranges and meanings: README.md, section Settings. A copy of the original is in settings\runtime.default.ini.`r`n"
