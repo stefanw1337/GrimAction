@@ -1,3 +1,13 @@
+# Cursor visibility test build (unreleased fork)
+
+This build adds conditional cursor hiding for the validated DX11 backend. It does not replace cursor textures and never displays a dot. Run the checks in TEST-MUSEPEKER.md before publishing. Offline tests are not evidence of in-game success.
+
+The existing `mouse_look_dot_cursor` key is retained for INI compatibility but ignored. Leave it false. No new setting is required: F8 mouse capture controls hiding. F8 off, menus, NPC conversation, Alt and loss of focus release it. DX9 remains unchanged. Unknown DX11 binaries are rejected before installing hooks. A stale capture request expires after 250 ms on owner-thread callbacks.
+
+Telemetry adds cursor_visibility (0 released, 1 hidden, 2 no owner-thread application yet, 3 backend unavailable), cursor_owner and cursor_thread. UI detection gaps from upstream still require testing; do not claim every panel is supported.
+
+---
+
 # GrimAction: third-person camera for Grim Dawn
 
 GrimAction adds an over-the-shoulder, mouse-look camera to Grim Dawn. Movement stays the game's own WASD (or controller)
@@ -52,7 +62,7 @@ You need WASD movement: in the game options, turn on movement with the keyboard 
 
 ## Known limits
 
-- **The game's hand cursor stays visible** in third person unless you apply the optional dot cursor (below).
+- **Cursor visibility:** this fork tests conditional hiding during captured DX11 mouse look; see the test-build notes above.
 - **Controller:** a controller works with the game's own controller camera, and the right stick now also tilts the camera
   up and down (turn it off with `right_stick_pitch_enabled=false`).
 - **After an NPC dialog** the cursor stays free until you move; moving puts it back to mouse look.
@@ -101,34 +111,9 @@ values stop F8 from switching back), `virtual_zoom_engine_distance`, the `collis
 (fixed in this version: F8, starting in the normal camera). `mouse_look_dot_cursor` and `ui_probe_enabled` are reserved for
 features that don't work yet; leave them `false`.
 
-## Dot cursor (optional)
+## Legacy dot extras
 
-GrimAction itself can't hide the game's cursor. Grim Dawn draws it from a texture, and the dot cursor extra swaps that
-texture's hand for an outlined white dot centred on the exact spot you click. The game can only draw the cursor image
-below and to the right of the click point, so you see the lower-right quarter of the dot, with its corner on the click point.
-The game uses the same hand in menus, so the dot is your pointer everywhere. The attack sword, NPC dialog bubble and
-merchant bag cursors are unchanged.
-
-1. Close Grim Dawn.
-2. Double-click `extras\dot-cursor\Dot Cursor.cmd`.
-
-To undo, double-click `Restore Hand Cursor.cmd`, or use Steam: Grim Dawn > Properties > Installed Files > Verify integrity
-of game files.
-
-To change the dot, open `Set-HiddenHandCursor.ps1` in Notepad. The settings are at the top: `DotRadius` (size),
-`OutlineWidth`, `OutlineOpacity`, and `Shape` (`Quarter`, exactly on the click point, or `Round`, a full circle that sits
-slightly below and to the right of it). Save, close Grim Dawn, and run `Dot Cursor.cmd` again.
-
-Unlike the rest of GrimAction, this **edits a game file**: `resources\UI.arc`. It uses the game's own ArchiveTool, changes
-only the two hand-cursor images, checks the result, and keeps a backup of the original in `extras\dot-cursor\backup`. A
-Grim Dawn update or a Steam file check may put the hand back; run it again afterwards. The download contains no game art:
-the dot is drawn into your own copy of the texture.
-
-The texture dot works on its own. If you use ReShade, the effect `extras\reshade\ThirdPersonDot.fx` can instead draw a
-fully round dot at the mouse (run the texture dot or the ReShade dot, not both, or you'll see two). Copy it into your ReShade shaders folder (usually
-`Grim Dawn\x64\reshade-shaders\Shaders`), open the ReShade overlay (Home), enable **ThirdPersonDot**, and set its size and
-color to taste. Keep it on all the time. If you'd rather have only the ReShade dot, run `Set-HiddenHandCursor.ps1 -Style
-Blank` to remove the hand entirely.
+Not included or used in this test build.
 
 ## Safety and what it does
 

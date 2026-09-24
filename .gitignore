@@ -6,3 +6,4 @@ artifacts/
 *.suo
 third_party/detours/bin.X64/
 third_party/detours/lib.X64/
+*.obj
