@@ -22,6 +22,7 @@
 #include "virtual_zoom_model.h"
 #include "controller_event_model.h"
 #include "cursor_visibility_model.h"
+#include "skybox_policy.h"
 #endif
 
 #include <array>
@@ -66,6 +67,8 @@ SteamControllerUpdate steam_controller_update_original{};
 gdtpc::DetourHook steam_controller_update_hook;
 std::atomic<DWORD> cursor_owner_thread{0}, cursor_apply_thread{0};
 std::atomic<std::uint32_t> cursor_visibility_status{0};
+std::atomic<std::uint32_t> sky_status{0};
+std::atomic<std::uint64_t> sky_submissions{0};
 #endif
 HANDLE logging_thread{};
 HANDLE logging_stop_event{};
@@ -341,7 +344,8 @@ struct TelemetrySnapshot
     std::uint32_t view_distance_locked{0xFFFFFFFFU}; // byte GameEngine+0x1B40 (IsViewDistanceLocked)
     std::uint32_t npc_talk{};                        // gdtpc::NpcTalkSignal
     std::uint32_t controller_state_rva{0xFFFFFFFFU}; // player controller top state vtable, Game.dll RVA (0 none)
-    std::uint32_t cursor_visibility{}, cursor_owner{}, cursor_thread{};
+    std::uint32_t cursor_visibility{}, cursor_owner{}, cursor_thread{}, sky_status{};
+    std::uint64_t sky_submissions{};
     std::uint32_t dot_cursor{};                       // 0 not applied, 1 dot shown, 2 window not found / write refused
     std::uint32_t panel_open_flags{0xFFFFFFFFU};      // menu-rule flag bytes (see panel_open_flags_status)
     std::uint64_t controller_event_updates{};         // completed native SteamControllerDevice::Update calls observed
@@ -1881,6 +1885,8 @@ void capture_camera_state(void* camera_pointer, const gdtpc::CallbackEvidenceSna
     sample.controller_state_rva = controller_state_rva_status.load(std::memory_order_relaxed);
     sample.dot_cursor = dot_cursor_status.load(std::memory_order_relaxed);
     sample.cursor_visibility = cursor_visibility_status.load(std::memory_order_relaxed);
+    sample.sky_status = sky_status.load(std::memory_order_relaxed);
+    sample.sky_submissions = sky_submissions.load(std::memory_order_relaxed);
     sample.cursor_owner = cursor_owner_thread.load(std::memory_order_relaxed);
     sample.cursor_thread = cursor_apply_thread.load(std::memory_order_relaxed);
     sample.panel_open_flags = panel_open_flags_status.load(std::memory_order_relaxed);
@@ -2601,6 +2607,10 @@ void sample_controller_event_status(TelemetrySnapshot& sample) noexcept
 }
 #endif
 
+#if defined(GDTPC_CAMERA_COLLISION)
+#include "skybox_runtime.inl"
+#endif
+
 void __fastcall update_from_input_logging_hook(void* camera) noexcept
 {
     const auto original = update_from_input_original;
@@ -2649,6 +2659,7 @@ void __fastcall update_from_input_logging_hook(void* camera) noexcept
         reapply_mouse_look_pitch(camera);
         apply_virtual_zoom_view(camera);
         run_far_plane_cap(camera);
+        sky_tick.store(GetTickCount64(), std::memory_order_release);
 #endif
 #endif
         capture_camera_state(camera, evidence);
@@ -2668,12 +2679,12 @@ bool write_ascii(const HANDLE file, const char* text, const std::size_t length) 
     return WriteFile(file, text, static_cast<DWORD>(length), &written, nullptr) != FALSE && written == length;
 }
 
-constexpr char telemetry_header[] = "sequence,tick_ms,callbacks,generation,sample_valid,camera,player,world_yaw,world_pitch,world_fov,requested_yaw,zoom_blend,zoom_target_blend,zoom_a,zoom_b,facing_valid,facing_x,facing_y,facing_z,facing_heading,game_engine,ui,dialog_active,action_set,input_mode,foreground,dropped,callback_thread_id,hook_entry,original_return,owner_thread_id,owner_thread_mismatches,camera_mode,restore_state,writes_enabled,control_writes,restore_writes,abandoned_excursions,collision_arm,collision_desired,collision_state,collision_queries,collision_hits,collision_faults,collision_writes,toggle_down,toggle_edges,profile_transition,collision_write_result,zoom_step_clicks,main_thread_id,window_thread_id,cam28_x,cam28_y,cam28_z,cam94_x,cam94_y,cam94_z,camera_offset_x,camera_offset_y,camera_offset_z,target_offset_x,target_offset_y,target_offset_z,shoulder_side,shoulder_edges,shoulder_writes,menu_flag,menu_ui9918,menu_e1858,mouse_look_state,aim_y,yaw_delta,cursor_warps,cursor_escapes,mouse_yaw_writes,combat_state,combat_aux,panel_candidates,pitch_offset,pitch_writes,visual_distance,visual_arm,eye_pull,engine_distance,virtual_zoom_state,virtual_zoom_clicks,virtual_zoom_faults,camera_shake_suppressions,far_plane,render_far_plane,far_plane_percent,view_distance_locked,npc_talk,controller_state_rva,dot_cursor,panel_open_flags,controller_event_updates,controller_event_count,controller_analog_action,controller_analog_x,controller_analog_y,controller_event_faults,right_stick_y,stick_pitch_delta,cursor_visibility,cursor_owner,cursor_thread\r\n";
+constexpr char telemetry_header[] = "sequence,tick_ms,callbacks,generation,sample_valid,camera,player,world_yaw,world_pitch,world_fov,requested_yaw,zoom_blend,zoom_target_blend,zoom_a,zoom_b,facing_valid,facing_x,facing_y,facing_z,facing_heading,game_engine,ui,dialog_active,action_set,input_mode,foreground,dropped,callback_thread_id,hook_entry,original_return,owner_thread_id,owner_thread_mismatches,camera_mode,restore_state,writes_enabled,control_writes,restore_writes,abandoned_excursions,collision_arm,collision_desired,collision_state,collision_queries,collision_hits,collision_faults,collision_writes,toggle_down,toggle_edges,profile_transition,collision_write_result,zoom_step_clicks,main_thread_id,window_thread_id,cam28_x,cam28_y,cam28_z,cam94_x,cam94_y,cam94_z,camera_offset_x,camera_offset_y,camera_offset_z,target_offset_x,target_offset_y,target_offset_z,shoulder_side,shoulder_edges,shoulder_writes,menu_flag,menu_ui9918,menu_e1858,mouse_look_state,aim_y,yaw_delta,cursor_warps,cursor_escapes,mouse_yaw_writes,combat_state,combat_aux,panel_candidates,pitch_offset,pitch_writes,visual_distance,visual_arm,eye_pull,engine_distance,virtual_zoom_state,virtual_zoom_clicks,virtual_zoom_faults,camera_shake_suppressions,far_plane,render_far_plane,far_plane_percent,view_distance_locked,npc_talk,controller_state_rva,dot_cursor,panel_open_flags,controller_event_updates,controller_event_count,controller_analog_action,controller_analog_x,controller_analog_y,controller_event_faults,right_stick_y,stick_pitch_delta,cursor_visibility,cursor_owner,cursor_thread,sky_status,sky_submissions\r\n";
 
 int format_telemetry_row(const TelemetrySnapshot& sample, char* line, const std::size_t capacity) noexcept
 {
     return std::snprintf(line, capacity,
-        "%llu,%llu,%llu,%llu,%u,0x%llx,0x%llx,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%u,%.9g,%.9g,%.9g,%.9g,0x%llx,0x%llx,%u,%u,%u,%u,%llu,%u,%llu,%llu,%u,%llu,%u,%u,%u,%llu,%llu,%llu,%.9g,%.9g,%u,%llu,%llu,%llu,%llu,%u,%llu,%u,%u,%llu,%u,%u,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%u,%llu,%llu,%u,0x%llx,0x%llx,%u,%.9g,%.9g,%llu,%llu,%llu,%u,%u,0x%x,%.9g,%llu,%.9g,%.9g,%.9g,%.9g,%u,%llu,%llu,%llu,%.9g,%.9g,%u,%u,%u,0x%x,%u,0x%x,%llu,%u,%d,%.9g,%.9g,%llu,%d,%.9g,%u,%u,%u\r\n",
+        "%llu,%llu,%llu,%llu,%u,0x%llx,0x%llx,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%u,%.9g,%.9g,%.9g,%.9g,0x%llx,0x%llx,%u,%u,%u,%u,%llu,%u,%llu,%llu,%u,%llu,%u,%u,%u,%llu,%llu,%llu,%.9g,%.9g,%u,%llu,%llu,%llu,%llu,%u,%llu,%u,%u,%llu,%u,%u,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%u,%llu,%llu,%u,0x%llx,0x%llx,%u,%.9g,%.9g,%llu,%llu,%llu,%u,%u,0x%x,%.9g,%llu,%.9g,%.9g,%.9g,%.9g,%u,%llu,%llu,%llu,%.9g,%.9g,%u,%u,%u,0x%x,%u,0x%x,%llu,%u,%d,%.9g,%.9g,%llu,%d,%.9g,%u,%u,%u,%u,%llu\r\n",
         static_cast<unsigned long long>(sample.sequence), static_cast<unsigned long long>(sample.tick_ms),
         static_cast<unsigned long long>(sample.callbacks), static_cast<unsigned long long>(sample.generation), sample.sample_valid,
         static_cast<unsigned long long>(sample.camera), static_cast<unsigned long long>(sample.player),
@@ -2721,7 +2732,8 @@ int format_telemetry_row(const TelemetrySnapshot& sample, char* line, const std:
         static_cast<unsigned long long>(sample.controller_event_updates), sample.controller_event_count,
         sample.controller_analog_action, sample.controller_analog_x, sample.controller_analog_y,
         static_cast<unsigned long long>(sample.controller_event_faults),
-        sample.right_stick_y, sample.stick_pitch_delta, sample.cursor_visibility, sample.cursor_owner, sample.cursor_thread);
+        sample.right_stick_y, sample.stick_pitch_delta, sample.cursor_visibility, sample.cursor_owner, sample.cursor_thread, sample.sky_status,
+        static_cast<unsigned long long>(sample.sky_submissions));
 }
 
 // Byte sink owned exclusively by the worker thread for its whole lifetime.
@@ -3054,6 +3066,8 @@ GDTPC_API GdTpcPhase __cdecl GdTpcInitializeLoggingV2(const wchar_t* log_path, c
 #endif
 #if defined(GDTPC_CAMERA_COLLISION)
             !prepare_cursor_visibility() || !attach_cursor_visibility() ||
+            !prepare_skybox(engine) || sky_region_hook.attach(reinterpret_cast<void**>(&sky_region_original),
+                reinterpret_cast<void*>(&sky_region_draw)) != NO_ERROR ||
             steam_controller_update_hook.attach(reinterpret_cast<void**>(&steam_controller_update_original),
                 reinterpret_cast<void*>(&steam_controller_update_logging_hook)) != NO_ERROR ||
 #endif
@@ -3066,6 +3080,7 @@ GDTPC_API GdTpcPhase __cdecl GdTpcInitializeLoggingV2(const wchar_t* log_path, c
             if (update_from_input_hook.installed()) static_cast<void>(update_from_input_hook.detach());
 #if defined(GDTPC_CAMERA_COLLISION)
             rollback_cursor_visibility();
+            if (sky_region_hook.installed()) static_cast<void>(sky_region_hook.detach());
             if (steam_controller_update_hook.installed()) static_cast<void>(steam_controller_update_hook.detach());
 #endif
             // A bounded join keeps the remote initialization thread from blocking forever. On

@@ -1,3 +1,13 @@
+# Experimental F8 skybox branch
+
+This test build preserves the cursor fix and adds a native fallback sky while F8 third-person mode is active. Existing authored skyboxes are preserved. It uses the GDX3 `skybox_grey01a` record; GDX3 content is required for this first prototype. It adds no lights and does not edit map files. Camera far-plane percentage is 100 in this package.
+
+This is NOT a confirmed universal skybox release. No live game test has been performed. An existing but broken authored sky (including the current Northshire sky) is deliberately not replaced. Indoor-region classification and per-mod custom profiles are not implemented. Enclosed geometry should occlude native sky rendering, but open or missing cave geometry needs testing. F8 off and logical Stop prevent further fallback submissions. A cached native sky resource stays alive until process exit so queued renderables cannot refer to freed memory.
+
+Extract as a separate test folder. Quit the game before switching builds; do not replace or inject over the running cursor build. Test a base-game outdoor area with GDX3 available: F8 on/off, menus, region transitions, an enclosed cave, then Reign of Terror. Check that lighting, mouse hiding, and normal camera behavior remain unchanged. The CSV adds sky_status (0 idle, 1 submitted, 2 unavailable resource, 3 latched fault, 4 another render thread) and sky_submissions (cumulative). Submitted means queued, not proof that pixels appeared. Send a screenshot and log if still black. Do not publish as stable until these checks pass.
+
+---
+
 # Cursor visibility test build (unreleased fork)
 
 This build adds conditional cursor hiding for the validated DX11 backend. It does not replace cursor textures and never displays a dot. Run the checks in TEST-MUSEPEKER.md before publishing. Offline tests are not evidence of in-game success.
