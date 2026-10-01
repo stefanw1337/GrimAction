@@ -240,5 +240,26 @@ bool gdtpc::WindowsLevelQuery::raycast_from_camera(const float max_distance, flo
         return false;
     }
     std::memcpy(&distance, intersection, sizeof(distance));
+    // A center ray alone leaves almost no vertical clearance at grazing angles:
+    // skin 0.35 along a six-degree ray is only 0.037 above the ground.
+    // Sample a small camera envelope, retaining the closest valid obstruction.
+    if (!std::isfinite(clearance_) || clearance_<0 || clearance_>2) { ++refused_; return false; }
+    if (clearance_>0) {
+        const float horizontal=std::sqrt(ray.direction.x*ray.direction.x+ray.direction.z*ray.direction.z);
+        const float side_x=horizontal>0.0001F ? ray.direction.z/horizontal : 1.0F;
+        const float side_z=horizontal>0.0001F ? -ray.direction.x/horizontal : 0.0F;
+        const CollisionVec3 offsets[4]{{0,-clearance_,0},{0,clearance_,0},
+            {side_x*clearance_,0,side_z*clearance_},{-side_x*clearance_,0,-side_z*clearance_}};
+        for (const auto offset_value : offsets) {
+            EngineRay probe=engine_ray;
+            probe.origin[0]+=offset_value.x; probe.origin[1]+=offset_value.y; probe.origin[2]+=offset_value.z;
+            if (!guarded_intersection(*entries_,level,probe,intersection,surface_,max_distance,ignore_entity_)) {
+                ++refused_; return false;
+            }
+            float hit{}; std::memcpy(&hit,intersection,sizeof(hit));
+            if (std::isnan(hit) || hit<0) { ++refused_; return false; }
+            if (hit<distance) distance=hit;
+        }
+    }
     return true;
 }
