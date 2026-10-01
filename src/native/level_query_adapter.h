@@ -63,6 +63,8 @@ public:
     [[nodiscard]] bool raycast_from_camera(float max_distance, float& distance,
         CollisionRay& ray) noexcept override;
 
+    void set_clearance(float radius) noexcept { clearance_ = radius; }
+
     [[nodiscard]] std::uint64_t refused() const noexcept { return refused_; }
 
     // Virtual zoom: the camera position +0x94 was computed by the previous frame's update from that frame's
@@ -85,5 +87,6 @@ private:
     CollisionVec3 camera_displacement_{};
     bool has_camera_displacement_{};
     std::uint64_t refused_{};
+    float clearance_{};
 };
 }

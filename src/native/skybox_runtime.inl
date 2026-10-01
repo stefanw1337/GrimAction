@@ -10,6 +10,7 @@ SkyConstruct sky_construct{};
 SkySubmit sky_submit{};
 SkyStringAssign sky_string_assign{};
 gdtpc::DetourHook sky_region_hook;
+gdtpc::DetourHook sky_submit_hook;
 std::atomic<std::uint64_t> sky_tick{0};
 std::atomic<DWORD> sky_thread{0};
 alignas(16) unsigned char sky_storage[64]{}; // native Skybox has one owned mesh pointer
@@ -45,9 +46,14 @@ bool sky_guarded_submit(void* region, void* scene) noexcept {
         if (*reinterpret_cast<void**>(sky_storage) == nullptr) {
             sky_status.store(2, std::memory_order_relaxed); return false;
         }
-        // Reproduce Region::AddToScene's identity rotation and camera translation.
+        // The stock eldritch mesh is a LOWER hemisphere (Y -114.7..3.9).
+        // Rotate 180 degrees about X to cover the upper sky, retaining winding.
+        // Camera translation still follows the native Region::AddToScene path.
         // The original region call uses scene + B0/B4/B8, not the region origin.
-        float coords[12]{1,0,0, 0,1,0, 0,0,1, 0,0,0};
+        float coords[12]{1,0,0, 0,-1,0, 0,0,-1, 0,0,0};
+        const float scale=gdtpc::skybox_radius_scale(sky_far_plane.load(std::memory_order_acquire),170.0F,170.0F);
+        if (scale<=0) return false;
+        for (unsigned i=0;i<9;++i) coords[i]*=scale;
         std::memcpy(coords+9, s+0xb0, sizeof(float)*3);
         sky_submit(sky_storage, region, coords, scene);
         sky_status.store(1, std::memory_order_relaxed);
@@ -67,6 +73,38 @@ void __fastcall sky_region_draw(void* region, void* scene, const void* coords,
     sky_thread.compare_exchange_strong(expected,thread);
     if (sky_thread.load() != thread) { sky_status.store(4); return; }
     static_cast<void>(sky_guarded_submit(region,scene));
+}
+// Northshire already has a valid blue unit sphere but its record scales it to
+// 1000, beyond the observed 250-unit far plane. Adjust only its submitted basis
+// while F8 is active. The native object, record, and lighting are not modified.
+bool northshire_sky_coords(void* region, const void* input, float* output) noexcept {
+    __try {
+        if (phase.load(std::memory_order_acquire) != GdTpcPhase::logging_active ||
+            control_stop_requested.load(std::memory_order_acquire) != 0 ||
+            camera_mode.load(std::memory_order_acquire) != 1) return false;
+        const auto now=GetTickCount64(), tick=sky_tick.load(std::memory_order_acquire);
+        if (tick==0 || now<tick || now-tick>250) return false;
+        auto* record=static_cast<unsigned char*>(region)+0x178;
+        const auto length=*reinterpret_cast<const std::size_t*>(record+16);
+        const auto capacity=*reinterpret_cast<const std::size_t*>(record+24);
+        const char* text=capacity<16 ? reinterpret_cast<const char*>(record) :
+            *reinterpret_cast<const char* const*>(record);
+        if (!gdtpc::northshire_sky_record(text,length)) return false;
+        std::memcpy(output,input,12*sizeof(float));
+        const float scale=gdtpc::skybox_radius_scale(sky_far_plane.load(std::memory_order_acquire),1000.0F,150.0F);
+        if (scale<=0) return false;
+        for (unsigned i=0;i<9;++i) output[i]*=scale;
+        return true;
+    } __except(EXCEPTION_EXECUTE_HANDLER) { return false; }
+}
+void __fastcall sky_native_submit(const void* sky, void* region, const void* coords, void* scene) noexcept {
+    float adjusted[12]{};
+    const bool corrected=northshire_sky_coords(region,coords,adjusted);
+    sky_submit(sky,region,corrected ? adjusted : coords,scene);
+    if (corrected) {
+        sky_status.store(5,std::memory_order_relaxed);
+        sky_submissions.fetch_add(1,std::memory_order_relaxed);
+    }
 }
 bool prepare_skybox(HMODULE engine) noexcept {
     const auto base=reinterpret_cast<std::uintptr_t>(engine);

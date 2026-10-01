@@ -1,10 +1,28 @@
-# Experimental F8 skybox branch
+# GrimAction skybox test3
 
-This test build preserves the cursor fix and adds a native fallback sky while F8 third-person mode is active. Existing authored skyboxes are preserved. It uses the GDX3 `skybox_grey01a` record; GDX3 content is required for this first prototype. It adds no lights and does not edit map files. Camera far-plane percentage is 100 in this package.
+This is a GrimAction test package, not a WoW-for-GrimDawn mod update. The cursor fix is preserved. No game installation files or map lighting are changed.
 
-This is NOT a confirmed universal skybox release. No live game test has been performed. An existing but broken authored sky (including the current Northshire sky) is deliberately not replaced. Indoor-region classification and per-mod custom profiles are not implemented. Enclosed geometry should occlude native sky rendering, but open or missing cave geometry needs testing. F8 off and logical Stop prevent further fallback submissions. A cached native sky resource stays alive until process exit so queued renderables cannot refer to freed memory.
+## Confirmed by the user in test2
 
-Extract as a separate test folder. Quit the game before switching builds; do not replace or inject over the running cursor build. Test a base-game outdoor area with GDX3 available: F8 on/off, menus, region transitions, an enclosed cave, then Reign of Terror. Check that lighting, mouse hiding, and normal camera behavior remain unchanged. The CSV adds sky_status (0 idle, 1 submitted, 2 unavailable resource, 3 latched fault, 4 another render thread) and sky_submissions (cumulative). Submitted means queued, not proof that pixels appeared. Send a screenshot and log if still black. Do not publish as stable until these checks pass.
+F8 shows the Northshire sky and restores the black/native view when disabled. Reign of Terror also shows a different sky. The user subsequently confirmed that test3 shows the PathOfGrimDawn sky and prevents the reported camera penetration through the ground.
+
+## Test3 changes
+
+The session log shows 250-unit render far planes in the first two tested worlds and 120 in the third, while fallback submissions continued in all three. The fallback mesh reaches about 166 units, so test3 scales it to fit within 80 percent of the current render far plane. Northshire keeps its own blue sky and its F8-only scale correction, now also respecting the current far plane. Other authored skies are preserved. No sun or lighting changes are added to Reign of Terror. The fallback still relies on the stock GDX3 record and its GDX2 mesh.
+
+Camera collision now tests a 0.6-unit envelope with lower, upper and lateral offset rays instead of only the center ray. This addresses terrain/near-camera intersection at grazing angles. It is an approximation, not a full swept-volume collision solver; geometry without collision can still need map fixes. A regression test covers a center ray that misses flat ground while the camera envelope intersects it.
+
+## Known limitations accepted for this version
+
+- A black band remains near the fallback sky horizon. The stock mesh covers the upper hemisphere and fades at its rim; complete background coverage is not implemented.
+- The user reported F8 and logical Stop failing after returning to the main menu and switching mods. This remains undiagnosed; fully restart the game between mods if it occurs.
+- View distance above 100 percent is not supported.
+
+## Testing
+
+Quit the game fully before switching builds. Extract separately and use Start GrimAction.cmd. Test PathOfGrimDawn's sky at F8, then ground-level camera angles and walls in Northshire and RoT. Check F8 off, menus and the cursor fix. Retain dark map lighting. Sky clouds/sun artwork for WoW is a separate pending change. Automatic indoor classification and per-mod sky profiles are not implemented.
+
+CSV sky_status: 0 idle, 1 fallback queued, 2 unavailable resource, 3 latched fault, 4 another render thread, 5 Northshire correction queued. sky_submissions is cumulative and does not prove rendered pixels. End the game normally or use logical Stop to flush the log. No live game was launched by the developer. Live confirmations were supplied by the user.
 
 ---
 

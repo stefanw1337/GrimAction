@@ -49,6 +49,7 @@ bool level_returns_null = false;
 bool region_faults = false;
 bool intersection_faults = false;
 bool calculate_faults = false;
+bool ground_plane = false;
 gdtpc::CollisionVec3 scripted_offset{0.0F, 0.0F, 42.0F};
 // Bytes the fake writes past the documented 0x14, to prove the out buffer is generously sized.
 std::size_t intersection_write_size = 0x14;
@@ -110,6 +111,11 @@ void __fastcall fake_get_intersection(void* level, const void* ray, void* inters
         volatile int* poison = nullptr;
         *poison = 1;
     }
+    if (ground_plane) {
+        const auto* f=static_cast<const float*>(ray);
+        const auto hit=f[4]<0 ? -f[1]/f[4] : infinity;
+        scripted_distance=hit>=0 && hit<=max_distance ? hit : infinity;
+    }
     // Write the hit parameter at offset 0, then scribble further to prove the buffer absorbs it.
     std::memcpy(intersection, &scripted_distance, sizeof(scripted_distance));
     for (std::size_t index = sizeof(float); index < intersection_write_size; ++index)
@@ -131,7 +137,7 @@ void reset()
     observed = {};
     scripted_distance = infinity;
     region_returns_null = level_returns_null = region_faults = intersection_faults = false;
-    calculate_faults = false;
+    calculate_faults = false; ground_plane=false;
     scripted_offset = {0.0F, 0.0F, 42.0F};
     intersection_write_size = 0x14;
     const float camera_position[3]{100.0F, 10.0F, 242.0F};
@@ -365,6 +371,23 @@ int main()
                 "NaN +0x94 position reached the level query");
         }
 
+        // A grazing ray can miss the ground while the bottom of the camera clips it.
+        {
+            reset(); ground_plane=true;
+            scripted_offset={0,-4.2F,41.79F};
+            const float position[3]{0,0.3F,41.79F};
+            std::memcpy(fake_camera_object+0x94,position,sizeof(position));
+            auto entries=complete_entries();
+            gdtpc::WindowsLevelQuery center(entries,fake_camera_object,&fake_player);
+            float center_distance{}; gdtpc::CollisionRay ray{};
+            require(center.raycast_from_camera(42,center_distance,ray) && std::isinf(center_distance),"center ray should miss ground");
+            gdtpc::WindowsLevelQuery envelope(entries,fake_camera_object,&fake_player);
+            envelope.set_clearance(0.6F); float distance{};
+            require(envelope.raycast_from_camera(42,distance,ray),"clearance query refused");
+            require(distance>0 && distance<42,"camera envelope did not catch grazing ground");
+            require(ray.origin.y+ray.direction.y*distance>0.59F,"camera bottom clearance lost");
+            require(observed.intersection_calls==6,"unexpected envelope ray count");
+        }
         std::cout << "PASS: level-query adapter entry validation, null camera/region/level refusal, "
                      "nonfinite-geometry refusal before any engine call, correct ray layout and bounds, "
                      "ignored player entity, uncached level re-fetch, miss sentinel passthrough, "

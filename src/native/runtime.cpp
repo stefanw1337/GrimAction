@@ -68,6 +68,7 @@ gdtpc::DetourHook steam_controller_update_hook;
 std::atomic<DWORD> cursor_owner_thread{0}, cursor_apply_thread{0};
 std::atomic<std::uint32_t> cursor_visibility_status{0};
 std::atomic<std::uint32_t> sky_status{0};
+std::atomic<float> sky_far_plane{0};
 std::atomic<std::uint64_t> sky_submissions{0};
 #endif
 HANDLE logging_thread{};
@@ -1652,6 +1653,7 @@ void run_collision_control(void* camera, const ObservedControlIdentity& before,
     if (force_query) collision_model->force_query_next();
     gdtpc::WindowsLevelQuery query(collision_entries, camera, after.player,
         gdtpc::default_physics_surface, camera_translation);
+    query.set_clearance(0.6F);
     // +0x94 still carries last frame's far engine distance and eye pull. Without a recorded displacement
     // (first held frame) there was no pull last frame and the calculated offset is the right subtraction.
     if (virtual_mode && virtual_zoom_previous_eye_valid) query.set_camera_displacement(virtual_zoom_previous_eye);
@@ -1935,6 +1937,7 @@ void capture_camera_state(void* camera_pointer, const gdtpc::CallbackEvidenceSna
         sample.target_offset_z = *reinterpret_cast<const float*>(camera + 0x564);
         sample.far_plane = *reinterpret_cast<const float*>(camera + 0x18);
         sample.render_far_plane = *reinterpret_cast<const float*>(camera + 0xb0);
+        sky_far_plane.store(sample.render_far_plane,std::memory_order_release);
         if (!std::isfinite(sample.world_yaw) || !std::isfinite(sample.world_pitch) || !std::isfinite(sample.world_fov) ||
             !std::isfinite(sample.requested_yaw) ||
             !std::isfinite(sample.zoom_blend) || !std::isfinite(sample.zoom_target_blend) ||
@@ -3066,7 +3069,8 @@ GDTPC_API GdTpcPhase __cdecl GdTpcInitializeLoggingV2(const wchar_t* log_path, c
 #endif
 #if defined(GDTPC_CAMERA_COLLISION)
             !prepare_cursor_visibility() || !attach_cursor_visibility() ||
-            !prepare_skybox(engine) || sky_region_hook.attach(reinterpret_cast<void**>(&sky_region_original),
+            !prepare_skybox(engine) || sky_submit_hook.attach(reinterpret_cast<void**>(&sky_submit),
+                reinterpret_cast<void*>(&sky_native_submit)) != NO_ERROR || sky_region_hook.attach(reinterpret_cast<void**>(&sky_region_original),
                 reinterpret_cast<void*>(&sky_region_draw)) != NO_ERROR ||
             steam_controller_update_hook.attach(reinterpret_cast<void**>(&steam_controller_update_original),
                 reinterpret_cast<void*>(&steam_controller_update_logging_hook)) != NO_ERROR ||
@@ -3081,6 +3085,7 @@ GDTPC_API GdTpcPhase __cdecl GdTpcInitializeLoggingV2(const wchar_t* log_path, c
 #if defined(GDTPC_CAMERA_COLLISION)
             rollback_cursor_visibility();
             if (sky_region_hook.installed()) static_cast<void>(sky_region_hook.detach());
+            if (sky_submit_hook.installed()) static_cast<void>(sky_submit_hook.detach());
             if (steam_controller_update_hook.installed()) static_cast<void>(steam_controller_update_hook.detach());
 #endif
             // A bounded join keeps the remote initialization thread from blocking forever. On
