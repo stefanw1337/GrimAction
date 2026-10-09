@@ -1,6 +1,6 @@
 # Cursor test before release
 
-Release 0.2.4 requires in-game acceptance on the supported patch.
+Release 0.2.3 requires in-game acceptance on the supported patch.
 
 1. Fully exit Grim Dawn if another GrimAction build was loaded. Do not start two builds in the same game session.
 2. Start Grim Dawn in DirectX 11 and wait for the main menu.

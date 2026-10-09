@@ -37,7 +37,7 @@ $packageName = "GrimAction-$Version"
 $packagesRoot = Join-Path $projectRoot 'artifacts\packages'
 $stage = Join-Path $packagesRoot $packageName
 $zip = Join-Path $packagesRoot "$packageName.zip"
-if ((Test-Path -LiteralPath $stage) -or (Test-Path -LiteralPath $zip)) { throw "Package $packageName already exists; packages are immutable. Use a new -Version." }
+if ((Test-Path -LiteralPath $stage) -or (Test-Path -LiteralPath $zip)) { throw "Package $packageName already exists; preserve the existing local package before rebuilding. Do not replace a published release." }
 
 $dotnet = Join-Path $env:USERPROFILE '.dotnet\dotnet.exe'
 if (-not (Test-Path -LiteralPath $dotnet)) { $dotnet = (Get-Command dotnet -ErrorAction Stop).Source }
@@ -61,8 +61,6 @@ Copy-Item -LiteralPath (Join-Path $projectRoot 'package\Stop-GrimAction.ps1') -D
 Copy-Item -LiteralPath (Join-Path $projectRoot 'package\Start GrimAction.cmd') -Destination $stage
 Copy-Item -LiteralPath (Join-Path $projectRoot 'package\Stop GrimAction.cmd') -Destination $stage
 Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\PLAYER_GUIDE.md') -Destination (Join-Path $stage 'README.md')
-Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\CURSOR_TEST.md') -Destination (Join-Path $stage 'CURSOR_TEST.md')
-Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\ANTIVIRUS.md') -Destination (Join-Path $stage 'ANTIVIRUS.md')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSE') -Destination (Join-Path $stage 'LICENSE.txt')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'THIRD-PARTY-NOTICES.txt') -Destination $stage
 # Settings are the release's offline-validated file with a short header; the player may edit them, so they are not hashed.

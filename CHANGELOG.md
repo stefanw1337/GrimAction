@@ -2,7 +2,7 @@
 
 All notable player-facing changes to GrimAction are recorded here.
 
-## 0.2.4 - 2026-10-09
+## 0.2.3 - 2026-10-09
 
 ### Changed
 

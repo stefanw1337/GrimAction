@@ -1,4 +1,4 @@
-# GrimAction 0.2.4
+# GrimAction 0.2.3
 
 GrimAction adds an over-the-shoulder, mouse-look camera to Grim Dawn. Movement stays the game's own WASD (or controller)
 movement. Press F8 in game to switch between the normal camera and third person.
@@ -50,7 +50,7 @@ You need WASD movement: in the game options, turn on movement with the keyboard 
 
 ## Known limits
 
-- **Cursor visibility:** the DX11 cursor is hidden during captured mouse look. See `CURSOR_TEST.md` for the release checks. The legacy dot-cursor setting is ignored.
+- **Cursor visibility:** the DX11 cursor is hidden during captured mouse look. The legacy dot-cursor setting is ignored.
 - **Controller:** a controller works with the game's own controller camera, and the right stick now also tilts the camera
   up and down (turn it off with `right_stick_pitch_enabled=false`).
 - **After an NPC dialog** the cursor stays free until you move; moving puts it back to mouse look.
@@ -114,9 +114,11 @@ The source code is public, and the fixed package files are listed with their SHA
 
 ## Antivirus
 
-Because GrimAction injects a DLL, some antivirus programs flag it as a "trojan/injector". A detection needs investigation; it is not automatically a false positive. Please
-do not disable your antivirus. `ANTIVIRUS.md` explains your options, including a narrow exclusion for the GrimAction folder
-only.
+GrimAction loads a runtime DLL into Grim Dawn for camera control. Antivirus software can flag this behavior; a detection should be investigated rather than automatically dismissed.
+
+Download GrimAction from its GitHub Releases page and compare the ZIP's SHA-256 with the published checksum. The launcher also checks fixed package files against `bin\package-manifest.json` before starting. These checks verify file integrity, not safety.
+
+If a file is quarantined, stop and review the detection. You can submit it to your antivirus vendor for analysis. Do not disable system-wide protection to run GrimAction. GrimAction is unsigned.
 
 ## Uninstall
 
@@ -134,6 +136,17 @@ Fully exit Grim Dawn, then delete the GrimAction folder. Remove any antivirus ex
 | Does not match this release | A file was damaged or changed (often by antivirus). Extract the zip again. |
 | Windows did not allow access | Run the game and GrimAction the same way: both normally, or both as administrator. |
 | Mouse look stopped working after changing graphics options | Quit the game, relaunch, and start GrimAction again. |
+
+### Cursor and camera controls
+
+In DirectX 11, F8 turns third person on and hides the cursor while mouse look is active. F8 off restores the normal camera and cursor. Hold Left Alt whenever you need to click; supported menus and NPC conversations release the cursor automatically. DirectX 9 cursor rendering is unchanged.
+
+If the cursor or camera gets stuck:
+
+1. Hold Left Alt to regain the cursor and close any open dialog or menu.
+2. Press F8 to return to the normal camera, or run **Stop GrimAction.cmd**.
+3. If controls still do not respond, fully exit Grim Dawn and restart both the game and GrimAction. Only start GrimAction once per game session.
+4. If it happens again, report what you were doing and attach that session's CSV from `logs`.
 
 At the furthest zoom, looking almost horizontally can expose black above or beyond the level. Grim Dawn's isometric maps
 do not include a complete sky or distant backdrop for that viewpoint. Zoom in slightly or look downward; normal play is

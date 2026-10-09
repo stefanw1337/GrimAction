@@ -24,8 +24,8 @@
 #    -> artifacts\releases\collision\<release-id>\
 
 # 4. Build the player package (self-contained injector, launcher, docs, zip + SHA-256).
-.\scripts\Build-PlayerPackage.ps1 -ReleasePath artifacts\releases\collision\<release-id> -Version 0.2.4
-#    -> artifacts\packages\GrimAction-0.2.4.zip
+.\scripts\Build-PlayerPackage.ps1 -ReleasePath artifacts\releases\collision\<release-id> -Version 0.2.3
+#    -> artifacts\packages\GrimAction-0.2.3.zip
 ```
 
 Step 3 compiles with `/W4 /WX /sdl /GS /GUARD:CF` and links with `/Brepro`. Building the same source twice gives
@@ -57,3 +57,5 @@ normally.
 
 Defender may flag build outputs (see `docs/ANTIVIRUS.md`). Add a narrow exclusion for `artifacts\releases` if needed.
 Never change the code to avoid a detection.
+
+The player ZIP contains one README for setup, controls and troubleshooting. The cursor acceptance checklist stays in the source repository. Local packaging revisions before publication keep the planned release version; preserve earlier local candidates before rebuilding. Published versions must not be replaced.

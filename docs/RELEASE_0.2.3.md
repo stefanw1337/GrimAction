@@ -1,4 +1,4 @@
-# GrimAction 0.2.4
+# GrimAction 0.2.3
 
 Compatibility update for the supported October x64 Grim Dawn build (`oct2026-d3915e25-x64`).
 
@@ -12,7 +12,7 @@ Compatibility update for the supported October x64 Grim Dawn build (`oct2026-d39
 
 ## Install
 
-Fully exit Grim Dawn before changing GrimAction versions. Extract `GrimAction-0.2.4.zip` to a separate folder, launch the x64 game, and run `Start GrimAction.cmd` at the main menu.
+Fully exit Grim Dawn before changing GrimAction versions. Extract `GrimAction-0.2.3.zip` to a separate folder, launch the x64 game, and run `Start GrimAction.cmd` at the main menu.
 
 ## Validation and limitations
 
