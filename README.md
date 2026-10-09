@@ -22,7 +22,7 @@ see [docs/ANTIVIRUS.md](docs/ANTIVIRUS.md). Please don't disable your antivirus.
 
 Player-facing release history is in [CHANGELOG.md](CHANGELOG.md).
 
-Supported game files: the October 2026 x64 patch copied on October 9, identified as `oct2026-d3915e25-x64` in the compatibility manifest. Release 0.2.3 has offline compatibility validation; in-game acceptance is pending. When the game updates, GrimAction refuses to load until it's updated.
+Supported game files: the October 2026 x64 patch copied on October 9, identified as `oct2026-d3915e25-x64` in the compatibility manifest. Release 0.2.3 passed offline compatibility checks and was confirmed working in game by the maintainer on October 9, 2026. When the game updates, GrimAction refuses to load until it's updated.
 
 ## Contributors
 

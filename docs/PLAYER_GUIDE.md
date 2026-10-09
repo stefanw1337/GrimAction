@@ -160,7 +160,7 @@ report a bug, you can attach the log from that session. Delete old logs any time
 ## Supported game version
 
 Offline compatibility checks pass for the x64 game files identified by `oct2026-d3915e25-x64` in the compatibility manifest. When Grim Dawn updates, GrimAction refuses to load until a
-matching release is published. This release still requires in-game acceptance testing on that patch.
+matching release is published. The maintainer confirmed this release working in game on October 9, 2026. The limitations listed above still apply.
 
 ## License
 

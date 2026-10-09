@@ -1,6 +1,6 @@
 # Cursor test before release
 
-Release 0.2.3 requires in-game acceptance on the supported patch.
+The maintainer confirmed release 0.2.3 working in game on October 9, 2026. The checklist below remains available for regression testing; this confirmation does not record a separate result for every step.
 
 1. Fully exit Grim Dawn if another GrimAction build was loaded. Do not start two builds in the same game session.
 2. Start Grim Dawn in DirectX 11 and wait for the main menu.

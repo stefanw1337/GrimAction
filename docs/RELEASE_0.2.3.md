@@ -16,7 +16,7 @@ Fully exit Grim Dawn before changing GrimAction versions. Extract `GrimAction-0.
 
 ## Validation and limitations
 
-Native regression tests, exact game-file validation and package integrity checks passed. In-game acceptance of this release is pending.
+Native regression tests, exact game-file validation and package integrity checks passed. The maintainer confirmed this release working in game on October 9, 2026.
 
 Low-angle terrain penetration, a dark fallback horizon band, and camera/Stop failures after world changes remain known limitations. Fully restart the game if controls stop responding. View distance remains limited to 50-100 percent; experimental expansion is not included.
 

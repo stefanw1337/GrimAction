@@ -18,7 +18,7 @@ All notable player-facing changes to GrimAction are recorded here.
 ### Validation
 
 - Exact game-file and native entry-point checks remain required. Compatibility with unverified patches is not claimed.
-- In-game acceptance of this release is pending. A dark fallback horizon band and camera/Stop failures after world changes remain known limitations.
+- The maintainer confirmed this release working in game on October 9, 2026. A dark fallback horizon band and camera/Stop failures after world changes remain known limitations.
 
 ## 0.2.0 - 2026-09-15
 
