@@ -71,16 +71,10 @@ bool prepare_cursor_visibility() noexcept {
     try {
     const auto module = GetModuleHandleW(L"Direct3D11.dll");
     if (module == nullptr) { cursor_visibility_status.store(3); return true; } // DX9: unchanged
-    constexpr std::array<std::uint8_t,32> expected{0x3a,0xa8,0x1f,0x51,0xe5,0xb8,0x58,0xf2,0x78,0x86,0x31,0x8c,0x4a,0x33,0xf3,0xcc,0x1b,0x6d,0x90,0xb8,0x4d,0xb9,0xac,0xf2,0xf5,0x73,0x43,0xfc,0xd4,0xf9,0xab,0x3a};
     std::array<wchar_t,32768> path{};
     const auto length=GetModuleFileNameW(module,path.data(),static_cast<DWORD>(path.size()));
-    if (length==0 || length>=path.size() || !validate_hash(path.data(),expected)) return false;
-    constexpr std::uint8_t show_prefix[]{0x40,0x53,0x48,0x83,0xec,0x20,0x33,0xc9,0x0f,0xb6,0xda,0x84,0xd2,0x0f,0x94,0xc1};
-    constexpr std::uint8_t present_prefix[]{0x48,0x89,0x5c,0x24,0x08,0x48,0x89,0x74,0x24,0x10,0x57,0x48,0x83,0xec,0x20,0x48};
-    const AccessPoint points[]{
-        {"?ShowHardwareCursor@Direct3DDevice11@GAME@@UEAAX_N@Z",show_prefix,std::size(show_prefix),0x9f30},
-        {"?PresentSurface@Direct3DDevice11@GAME@@UEAAXPEAVRenderSurface@2@@Z",present_prefix,std::size(present_prefix),0x7c40}};
-    if (!validate_access_points(module,points,std::size(points))) return false;
+    if (length==0 || length>=path.size() || !validate_hash(path.data(),cursor_backend_hash)) return false;
+    if (!validate_access_points(module,cursor_access_points.data(),cursor_access_points.size())) return false;
     cursor_show_original=reinterpret_cast<CursorShow>(GetProcAddress(module,"?ShowHardwareCursor@Direct3DDevice11@GAME@@UEAAX_N@Z"));
     cursor_present_original=reinterpret_cast<CursorPresent>(GetProcAddress(module,"?PresentSurface@Direct3DDevice11@GAME@@UEAAXPEAVRenderSurface@2@@Z"));
     const auto base=reinterpret_cast<std::uintptr_t>(module);

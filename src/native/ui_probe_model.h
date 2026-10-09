@@ -45,7 +45,7 @@ public:
 
 struct UiProbeLimits
 {
-    std::size_t engine_bytes{0x38000};      // covers every GameEngine field read so far (+0x37718)
+    std::size_t engine_bytes{0x38000};      // covers every GameEngine field read so far (+0x37748)
     std::size_t ui_bytes{0x20000};
     std::size_t pointer_scan_bytes{0x4000}; // only the start of the UI object is scanned for pointers
     std::size_t child_bytes{0x300};

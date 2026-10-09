@@ -2,110 +2,110 @@
   "schemaVersion": 1,
   "builds": [
     {
-      "id": "steam-24825149-x64",
-      "executableSha256": "5385c7a8b597df6d8cad64660c4aa4f41c27f1224585ff8603203cb78152e40e",
+      "id": "oct2026-d3915e25-x64",
+      "executableSha256": "d3915e2599317b6670cc088ba958afb2b2f4fa8141cfd1d777ee02f9ea1fc4c4",
       "modules": [
         {
           "file": "Game.dll",
-          "sha256": "07775a297050e84a846af1182731700614fb8b7bb41cca46b37fd24c90529387",
+          "sha256": "cd7ecd7942d719f96b42aff4896f8c25d52152b4a41191f71a4a66ea48cecad2",
           "exports": [
             {
               "name": "?GetCamera@GameEngine@GAME@@QEAAPEAVGameCamera@2@XZ",
-              "rva": 2904096,
+              "rva": 2984608,
               "prefixHex": "488d81b0130000c3"
             },
             {
               "name": "?UpdateFromInputImpl@GameCamera@GAME@@MEAAXXZ",
-              "rva": 2797744,
-              "prefixHex": "40534883ec40488bd9ff15f98c3400"
+              "rva": 2876736,
+              "prefixHex": "40534883ec40488bd9ff1569b83400"
             },
             {
               "name": "?Update@GameCamera@GAME@@UEAAXXZ",
-              "rva": 2802656,
+              "rva": 2881648,
               "prefixHex": "488bc4574881eca00000000f2970e8"
             },
             {
               "name": "?Shake@GameCamera@GAME@@QEAAXAEBVViewport@2@HMAEBVWorldVec3@2@_N@Z",
-              "rva": 2798400,
+              "rva": 2877392,
               "prefixHex": "48895c241048896c2418574881ec7004"
             },
             {
               "name": "?GetPlayer@GameCamera@GAME@@QEAAPEAVPlayer@2@XZ",
-              "rva": 2797680,
+              "rva": 2876672,
               "prefixHex": "488b8118010000c3"
             },
             {
               "name": "?GetInputMode@GameEngine@GAME@@QEBA?AW4InputMode@2@XZ",
-              "rva": 2988448,
-              "prefixHex": "8b8118770300c3"
+              "rva": 3070592,
+              "prefixHex": "8b8148770300c3"
             },
             {
               "name": "?GetMainPlayer@GameEngine@GAME@@QEBAPEAVPlayer@2@XZ",
-              "rva": 2980496,
-              "prefixHex": "40534883ec20488bd9488b89e0400000"
+              "rva": 3062640,
+              "prefixHex": "40534883ec20488bd9488b89f8400000"
             },
             {
               "name": "?AdjustYaw@GameCamera@GAME@@QEAAXM@Z",
-              "rva": 2802480,
+              "rva": 2881472,
               "prefixHex": "f30f58899c050000f30f11899c050000c3"
             },
             {
               "name": "?SetCameraYaw@GameCamera@GAME@@UEAAXM@Z",
-              "rva": 2803296,
+              "rva": 2882288,
               "prefixHex": "40534883ec300f29742420488bd9"
             },
             {
               "name": "?SetZoom@GameCamera@GAME@@QEAAXM@Z",
-              "rva": 2803344,
+              "rva": 2882336,
               "prefixHex": "40534883ec30f30f109194050000488bd9"
             },
             {
               "name": "?SetCameraFOV@GameEngine@GAME@@QEAAXM@Z",
-              "rva": 3020256,
-              "prefixHex": "f30f590dbc5a49004881c1b013000048ff25ba303100"
+              "rva": 3102432,
+              "prefixHex": "f30f590de4284b004881c1b013000048ff25ba4f3100"
             },
             {
               "name": "?GetControllerDirection@ControllerPlayer@GAME@@QEAAXAEAVVec3@2@@Z",
-              "rva": 1362304,
+              "rva": 1441040,
               "prefixHex": "f20f108158040000f20f11028b8160040000894208"
             },
             {
               "name": "?SetControllerDirection@ControllerPlayer@GAME@@QEAAXAEBVVec3@2@@Z",
-              "rva": 1362272,
+              "rva": 1441008,
               "prefixHex": "f20f1002f20f1181580400008b4208898160040000"
             },
             {
               "name": "?GetGameController@GameEngine@GAME@@QEAAAEAVGameController@2@XZ",
-              "rva": 2988432,
-              "prefixHex": "488d81f0760300c3"
+              "rva": 3070576,
+              "prefixHex": "488d8120770300c3"
             },
             {
               "name": "?GetActionSet@GameController@GAME@@QEBA?AW4ActionSet@12@XZ",
-              "rva": 151488,
+              "rva": 151520,
               "prefixHex": "8b4108c3"
             }
           ],
           "internalCode": [
             {
               "name": "ObjectManager id lookup (unexported; used by CursorHandler::GetPlayerCtrl)",
-              "rva": 105760,
+              "rva": 105792,
               "prefixHex": "48895c2408488974241889542410574883ec208bda488bf1"
             }
           ],
           "dataExports": [
             {
               "name": "??_7ControllerPlayer@GAME@@6B@",
-              "rva": 7009280
+              "rva": 7209808
             },
             {
               "name": "??_7ControllerPlayerStateTalkToNpc@GAME@@6B@",
-              "rva": 7417624
+              "rva": 7617592
             }
           ]
         },
         {
           "file": "Engine.dll",
-          "sha256": "9f2042e1fba6c9261c5e9f1e6d60751a49be669fdc687f87d8a082c798fd1ca0",
+          "sha256": "4c2ea14ce1c591b315cc29a8a96819a5c3c7e194adbd6f7eea208b9bb8a93153",
           "exports": [
             {
               "name": "?GetCoordsUnparented@Entity@GAME@@QEBAAEBVWorldCoords@2@XZ",
@@ -119,7 +119,7 @@
             },
             {
               "name": "?SetCameraYaw@WorldCamera@GAME@@UEAAXM@Z",
-              "rva": 533808,
+              "rva": 533952,
               "prefixHex": "f30f11490cc3"
             },
             {
@@ -129,7 +129,7 @@
             },
             {
               "name": "?SetCameraPitch@WorldCamera@GAME@@QEAAXM@Z",
-              "rva": 2267120,
+              "rva": 2268064,
               "prefixHex": "f30f114910c3"
             },
             {
@@ -139,27 +139,27 @@
             },
             {
               "name": "?SetCameraFOV@WorldCamera@GAME@@QEAAXM@Z",
-              "rva": 2267136,
+              "rva": 2268080,
               "prefixHex": "f30f114914c3"
             },
             {
               "name": "?GetRegion@WorldCamera@GAME@@QEBAPEAVRegion@2@XZ",
-              "rva": 2263712,
+              "rva": 2264656,
               "prefixHex": "4883ec48488b01488d542420"
             },
             {
               "name": "?CalculateViewPosition@WorldCamera@GAME@@MEBA?AVWorldVec3@2@AEBV32@@Z",
-              "rva": 2265552,
+              "rva": 2266496,
               "prefixHex": "48895c24084889742410574883ec60"
             },
             {
               "name": "?GetLevelPtr@Region@GAME@@QEBAPEAVLevel@2@XZ",
-              "rva": 1654688,
+              "rva": 1655632,
               "prefixHex": "488b4168c3"
             },
             {
               "name": "?GetIntersection@Level@GAME@@QEBAXAEBVRay@2@AEAVIntersection@2@W4PhysicsSurface@2@PEAPEAVEntity@2@MPEBV62@_N@Z",
-              "rva": 1244464,
+              "rva": 1245488,
               "prefixHex": "488bc4488958084889681048897018"
             },
             {
@@ -174,18 +174,56 @@
             },
             {
               "name": "?Update@SteamControllerDevice@GAME@@QEAAXH@Z",
-              "rva": 1820016,
+              "rva": 1820960,
               "prefixHex": "488bc455535741564157488d68a1"
+            },
+            {
+              "name": "?AddToScene@Region@GAME@@QEAAXAEAVGraphicsScene@2@AEBVCoords@2@AEBVFrustum@2@PEBVWorldFrustum@2@@Z",
+              "rva": 1655264,
+              "prefixHex": "48895c241048896c2418574883ec500f"
+            },
+            {
+              "name": "??0Skybox@GAME@@QEAA@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+              "rva": 1775632,
+              "prefixHex": "488bc44889501055565741564157488d"
+            },
+            {
+              "name": "?AddToScene@Skybox@GAME@@QEBAXPEAVRegion@2@AEBVCoords@2@AEAVGraphicsScene@2@@Z",
+              "rva": 1776416,
+              "prefixHex": "48895c24084889742410574883ec2048"
             }
           ],
           "dataExports": [
             {
               "name": "??_7WinWindow@GAME@@6B@",
-              "rva": 3404960
+              "rva": 3404992
             },
             {
               "name": "?gEngine@GAME@@3PEAVEngine@1@EA",
               "rva": 4330536
+            }
+          ],
+          "internalCode": [
+            {
+              "name": "Native string assign used for skybox record ownership",
+              "rva": 143744,
+              "prefixHex": "48895c2408488974241048897c241841"
+            }
+          ]
+        },
+        {
+          "file": "Direct3D11.dll",
+          "sha256": "862a9ef1e67617c29122dc8b8b9c25dbbafe2e518ed98c0bb52b24b37d75ab5b",
+          "exports": [
+            {
+              "name": "?ShowHardwareCursor@Direct3DDevice11@GAME@@UEAAX_N@Z",
+              "rva": 40752,
+              "prefixHex": "40534883ec2033c90fb6da84d20f94c1"
+            },
+            {
+              "name": "?PresentSurface@Direct3DDevice11@GAME@@UEAAXPEAVRenderSurface@2@@Z",
+              "rva": 31808,
+              "prefixHex": "48895c24084889742410574883ec2048"
             }
           ]
         }

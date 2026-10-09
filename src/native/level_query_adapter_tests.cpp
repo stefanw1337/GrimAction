@@ -386,7 +386,20 @@ int main()
             require(envelope.raycast_from_camera(42,distance,ray),"clearance query refused");
             require(distance>0 && distance<42,"camera envelope did not catch grazing ground");
             require(ray.origin.y+ray.direction.y*distance>0.59F,"camera bottom clearance lost");
-            require(observed.intersection_calls==6,"unexpected envelope ray count");
+            require(observed.intersection_calls>=6,"unexpected envelope ray count");
+        }
+        {
+            reset(); ground_plane = true;
+            // Entire horizontal arm starts 0.2 below a one-sided plane.
+            scripted_offset = {0.0F, 0.0F, 10.0F};
+            const float eye[3]{0.0F, -0.2F, 10.0F};
+            std::memcpy(fake_camera_object + 0x94, eye, sizeof(eye));
+            auto entries = complete_entries();
+            gdtpc::WindowsLevelQuery query(entries, fake_camera_object, nullptr);
+            query.set_clearance(0.6F);
+            float distance{}; gdtpc::CollisionRay ray{};
+            require(query.raycast_from_camera(10.0F, distance, ray), "below-ground query refused");
+            require(std::isfinite(distance) && distance < 1.0F, "below-ground horizontal arm escaped clearance guard");
         }
         std::cout << "PASS: level-query adapter entry validation, null camera/region/level refusal, "
                      "nonfinite-geometry refusal before any engine call, correct ray layout and bounds, "

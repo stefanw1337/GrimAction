@@ -24,8 +24,8 @@
 #    -> artifacts\releases\collision\<release-id>\
 
 # 4. Build the player package (self-contained injector, launcher, docs, zip + SHA-256).
-.\scripts\Build-PlayerPackage.ps1 -ReleasePath artifacts\releases\collision\<release-id> -Version 0.1.0
-#    -> artifacts\packages\GrimAction-0.1.0.zip
+.\scripts\Build-PlayerPackage.ps1 -ReleasePath artifacts\releases\collision\<release-id> -Version 0.2.4
+#    -> artifacts\packages\GrimAction-0.2.4.zip
 ```
 
 Step 3 compiles with `/W4 /WX /sdl /GS /GUARD:CF` and links with `/Brepro`. Building the same source twice gives

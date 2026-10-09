@@ -374,19 +374,19 @@ struct AccessPoint
 };
 
 constexpr std::array<std::uint8_t, 8> get_camera_prefix{0x48, 0x8d, 0x81, 0xb0, 0x13, 0x00, 0x00, 0xc3};
-constexpr std::array<std::uint8_t, 15> update_from_input_prefix{0x40, 0x53, 0x48, 0x83, 0xec, 0x40, 0x48, 0x8b, 0xd9, 0xff, 0x15, 0xf9, 0x8c, 0x34, 0x00};
+constexpr std::array<std::uint8_t, 15> update_from_input_prefix{0x40, 0x53, 0x48, 0x83, 0xec, 0x40, 0x48, 0x8b, 0xd9, 0xff, 0x15, 0x69, 0xb8, 0x34, 0x00};
 constexpr std::array<std::uint8_t, 15> game_camera_update_prefix{0x48, 0x8b, 0xc4, 0x57, 0x48, 0x81, 0xec, 0xa0, 0x00, 0x00, 0x00, 0x0f, 0x29, 0x70, 0xe8};
 constexpr std::array<std::uint8_t, 16> game_camera_shake_prefix{0x48, 0x89, 0x5c, 0x24, 0x10, 0x48, 0x89, 0x6c, 0x24, 0x18, 0x57, 0x48, 0x81, 0xec, 0x70, 0x04};
 constexpr std::array<std::uint8_t, 8> get_camera_player_prefix{0x48, 0x8b, 0x81, 0x18, 0x01, 0x00, 0x00, 0xc3};
-constexpr std::array<std::uint8_t, 7> get_input_mode_prefix{0x8b, 0x81, 0x18, 0x77, 0x03, 0x00, 0xc3};
-constexpr std::uint8_t get_main_player_prefix[]{0x40, 0x53, 0x48, 0x83, 0xec, 0x20, 0x48, 0x8b, 0xd9, 0x48, 0x8b, 0x89, 0xe0, 0x40, 0x00, 0x00};
+constexpr std::array<std::uint8_t, 7> get_input_mode_prefix{0x8b, 0x81, 0x48, 0x77, 0x03, 0x00, 0xc3};
+constexpr std::uint8_t get_main_player_prefix[]{0x40, 0x53, 0x48, 0x83, 0xec, 0x20, 0x48, 0x8b, 0xd9, 0x48, 0x8b, 0x89, 0xf8, 0x40, 0x00, 0x00};
 constexpr std::array<std::uint8_t, 17> adjust_yaw_prefix{0xf3, 0x0f, 0x58, 0x89, 0x9c, 0x05, 0x00, 0x00, 0xf3, 0x0f, 0x11, 0x89, 0x9c, 0x05, 0x00, 0x00, 0xc3};
 constexpr std::uint8_t set_game_yaw_prefix[]{0x40, 0x53, 0x48, 0x83, 0xec, 0x30, 0x0f, 0x29, 0x74, 0x24, 0x20, 0x48, 0x8b, 0xd9};
 constexpr std::uint8_t set_zoom_prefix[]{0x40, 0x53, 0x48, 0x83, 0xec, 0x30, 0xf3, 0x0f, 0x10, 0x91, 0x94, 0x05, 0x00, 0x00, 0x48, 0x8b, 0xd9};
-constexpr std::uint8_t set_game_fov_prefix[]{0xf3, 0x0f, 0x59, 0x0d, 0xbc, 0x5a, 0x49, 0x00, 0x48, 0x81, 0xc1, 0xb0, 0x13, 0x00, 0x00, 0x48, 0xff, 0x25, 0xba, 0x30, 0x31, 0x00};
+constexpr std::uint8_t set_game_fov_prefix[]{0xf3, 0x0f, 0x59, 0x0d, 0xe4, 0x28, 0x4b, 0x00, 0x48, 0x81, 0xc1, 0xb0, 0x13, 0x00, 0x00, 0x48, 0xff, 0x25, 0xba, 0x4f, 0x31, 0x00};
 constexpr std::uint8_t get_controller_direction_prefix[]{0xf2, 0x0f, 0x10, 0x81, 0x58, 0x04, 0x00, 0x00, 0xf2, 0x0f, 0x11, 0x02, 0x8b, 0x81, 0x60, 0x04, 0x00, 0x00, 0x89, 0x42, 0x08};
 constexpr std::uint8_t set_controller_direction_prefix[]{0xf2, 0x0f, 0x10, 0x02, 0xf2, 0x0f, 0x11, 0x81, 0x58, 0x04, 0x00, 0x00, 0x8b, 0x42, 0x08, 0x89, 0x81, 0x60, 0x04, 0x00, 0x00};
-constexpr std::uint8_t get_game_controller_prefix[]{0x48, 0x8d, 0x81, 0xf0, 0x76, 0x03, 0x00, 0xc3};
+constexpr std::uint8_t get_game_controller_prefix[]{0x48, 0x8d, 0x81, 0x20, 0x77, 0x03, 0x00, 0xc3};
 constexpr std::uint8_t get_action_set_prefix[]{0x8b, 0x41, 0x08, 0xc3};
 constexpr std::array<std::uint8_t, 8> get_coords_prefix{0x48, 0x8d, 0x81, 0xd8, 0x00, 0x00, 0x00, 0xc3};
 constexpr std::array<std::uint8_t, 6> get_yaw_prefix{0xf3, 0x0f, 0x10, 0x41, 0x0c, 0xc3};
@@ -403,49 +403,65 @@ constexpr std::uint8_t get_level_intersection_prefix[]{0x48, 0x8b, 0xc4, 0x48, 0
 constexpr std::uint8_t object_manager_get_prefix[]{0x40, 0x53, 0x48, 0x83, 0xec, 0x30, 0x48, 0xc7, 0x44, 0x24, 0x20, 0xfe, 0xff, 0xff, 0xff};
 constexpr std::uint8_t get_input_device_prefix[]{0x48, 0x8b, 0x81, 0x00, 0x02, 0x00, 0x00, 0xc3};
 constexpr std::uint8_t steam_controller_update_prefix[]{0x48, 0x8b, 0xc4, 0x55, 0x53, 0x57, 0x41, 0x56, 0x41, 0x57, 0x48, 0x8d, 0x68, 0xa1};
-// Unexported ObjectManager id lookup (Game.dll RVA 0x19D20), the routine CursorHandler::GetPlayerCtrl and the game's own
+// Unexported ObjectManager id lookup (Game.dll RVA 0x19D40), the routine CursorHandler::GetPlayerCtrl and the game's own
 // controller code use: (manager, id) -> object or null, under the manager's critical section. No export exists, so it is
 // validated by exact RVA and prefix on the hash-verified module, like the exported access points.
 constexpr std::uint8_t object_manager_find_prefix[]{0x48, 0x89, 0x5c, 0x24, 0x08, 0x48, 0x89, 0x74, 0x24, 0x18, 0x89, 0x54, 0x24, 0x10, 0x57, 0x48, 0x83, 0xec, 0x20, 0x8b, 0xda, 0x48, 0x8b, 0xf1};
-constexpr std::uint32_t object_manager_find_rva = 105760; // 0x19D20
+constexpr std::uint32_t object_manager_find_rva = 105792; // 0x19D40
 
-constexpr std::array<std::uint8_t, 32> executable_hash{0x53, 0x85, 0xc7, 0xa8, 0xb5, 0x97, 0xdf, 0x6d, 0x8c, 0xad, 0x64, 0x66, 0x0c, 0x4a, 0xa4, 0xf4, 0x1c, 0x27, 0xf1, 0x22, 0x45, 0x85, 0xff, 0x86, 0x03, 0x20, 0x3c, 0xb7, 0x81, 0x52, 0xe4, 0x0e};
-constexpr std::array<std::uint8_t, 32> game_hash{0x07, 0x77, 0x5a, 0x29, 0x70, 0x50, 0xe8, 0x4a, 0x84, 0x6a, 0xf1, 0x18, 0x27, 0x31, 0x70, 0x06, 0x14, 0xfb, 0x8b, 0x7b, 0xb4, 0x1c, 0xca, 0x46, 0xb3, 0x7f, 0xd2, 0x4c, 0x90, 0x52, 0x93, 0x87};
-constexpr std::array<std::uint8_t, 32> engine_hash{0x9f, 0x20, 0x42, 0xe1, 0xfb, 0xa6, 0xc9, 0x26, 0x1c, 0x5e, 0x9f, 0x1e, 0x6d, 0x60, 0x75, 0x1a, 0x49, 0xbe, 0x66, 0x9f, 0xdc, 0x68, 0x7f, 0x87, 0xd8, 0xa0, 0x82, 0xc7, 0x98, 0xfd, 0x1c, 0xa0};
+constexpr std::array<std::uint8_t, 32> executable_hash{0xd3, 0x91, 0x5e, 0x25, 0x99, 0x31, 0x7b, 0x66, 0x70, 0xcc, 0x08, 0x8b, 0xa9, 0x58, 0xaf, 0xb2, 0xb2, 0xf4, 0xfa, 0x81, 0x41, 0xcf, 0xd1, 0xd7, 0x77, 0xee, 0x02, 0xf9, 0xea, 0x1f, 0xc4, 0xc4};
+constexpr std::array<std::uint8_t, 32> game_hash{0xcd, 0x7e, 0xcd, 0x79, 0x42, 0xd7, 0x19, 0xf9, 0x6b, 0x42, 0xaf, 0xf4, 0x89, 0x6f, 0x8c, 0x25, 0xd5, 0x21, 0x52, 0xb4, 0xa4, 0x11, 0x91, 0xf7, 0x1a, 0x4a, 0x66, 0xea, 0x48, 0xce, 0xca, 0xd2};
+constexpr std::array<std::uint8_t, 32> engine_hash{0x4c, 0x2e, 0xa1, 0x4c, 0xe1, 0xc5, 0x91, 0xb3, 0x15, 0xcc, 0x29, 0xa8, 0xa9, 0x68, 0x19, 0xa5, 0xc3, 0xc7, 0xe1, 0x94, 0xad, 0xbd, 0x6f, 0x7e, 0xea, 0x20, 0x8b, 0x9b, 0xb8, 0xa9, 0x31, 0x53};
+
+constexpr std::uint8_t sky_region_prefix[]{0x48, 0x89, 0x5c, 0x24, 0x10, 0x48, 0x89, 0x6c, 0x24, 0x18, 0x57, 0x48, 0x83, 0xec, 0x50, 0x0f};
+constexpr std::uint8_t sky_ctor_prefix[]{0x48, 0x8b, 0xc4, 0x48, 0x89, 0x50, 0x10, 0x55, 0x56, 0x57, 0x41, 0x56, 0x41, 0x57, 0x48, 0x8d};
+constexpr std::uint8_t sky_submit_prefix[]{0x48, 0x89, 0x5c, 0x24, 0x08, 0x48, 0x89, 0x74, 0x24, 0x10, 0x57, 0x48, 0x83, 0xec, 0x20, 0x48};
+constexpr std::uint8_t sky_string_assign_prefix[]{0x48, 0x89, 0x5c, 0x24, 0x08, 0x48, 0x89, 0x74, 0x24, 0x10, 0x48, 0x89, 0x7c, 0x24, 0x18, 0x41};
+constexpr std::uint32_t sky_string_assign_rva = 143744;
 
 constexpr std::array game_access_points{
-    AccessPoint{"?GetCamera@GameEngine@GAME@@QEAAPEAVGameCamera@2@XZ", get_camera_prefix.data(), get_camera_prefix.size(), 2904096},
-    AccessPoint{"?UpdateFromInputImpl@GameCamera@GAME@@MEAAXXZ", update_from_input_prefix.data(), update_from_input_prefix.size(), 2797744},
-    AccessPoint{"?Update@GameCamera@GAME@@UEAAXXZ", game_camera_update_prefix.data(), game_camera_update_prefix.size(), 2802656},
-    AccessPoint{"?Shake@GameCamera@GAME@@QEAAXAEBVViewport@2@HMAEBVWorldVec3@2@_N@Z", game_camera_shake_prefix.data(), game_camera_shake_prefix.size(), 2798400},
-    AccessPoint{"?GetPlayer@GameCamera@GAME@@QEAAPEAVPlayer@2@XZ", get_camera_player_prefix.data(), get_camera_player_prefix.size(), 2797680},
-    AccessPoint{"?GetInputMode@GameEngine@GAME@@QEBA?AW4InputMode@2@XZ", get_input_mode_prefix.data(), get_input_mode_prefix.size(), 2988448},
-    AccessPoint{"?GetMainPlayer@GameEngine@GAME@@QEBAPEAVPlayer@2@XZ", get_main_player_prefix, std::size(get_main_player_prefix), 2980496},
-    AccessPoint{"?AdjustYaw@GameCamera@GAME@@QEAAXM@Z", adjust_yaw_prefix.data(), adjust_yaw_prefix.size(), 2802480},
-    AccessPoint{"?SetCameraYaw@GameCamera@GAME@@UEAAXM@Z", set_game_yaw_prefix, std::size(set_game_yaw_prefix), 2803296},
-    AccessPoint{"?SetZoom@GameCamera@GAME@@QEAAXM@Z", set_zoom_prefix, std::size(set_zoom_prefix), 2803344},
-    AccessPoint{"?SetCameraFOV@GameEngine@GAME@@QEAAXM@Z", set_game_fov_prefix, std::size(set_game_fov_prefix), 3020256},
-    AccessPoint{"?GetControllerDirection@ControllerPlayer@GAME@@QEAAXAEAVVec3@2@@Z", get_controller_direction_prefix, std::size(get_controller_direction_prefix), 1362304},
-    AccessPoint{"?SetControllerDirection@ControllerPlayer@GAME@@QEAAXAEBVVec3@2@@Z", set_controller_direction_prefix, std::size(set_controller_direction_prefix), 1362272},
-    AccessPoint{"?GetGameController@GameEngine@GAME@@QEAAAEAVGameController@2@XZ", get_game_controller_prefix, std::size(get_game_controller_prefix), 2988432},
-    AccessPoint{"?GetActionSet@GameController@GAME@@QEBA?AW4ActionSet@12@XZ", get_action_set_prefix, std::size(get_action_set_prefix), 151488}};
+    AccessPoint{"?GetCamera@GameEngine@GAME@@QEAAPEAVGameCamera@2@XZ", get_camera_prefix.data(), get_camera_prefix.size(), 2984608},
+    AccessPoint{"?UpdateFromInputImpl@GameCamera@GAME@@MEAAXXZ", update_from_input_prefix.data(), update_from_input_prefix.size(), 2876736},
+    AccessPoint{"?Update@GameCamera@GAME@@UEAAXXZ", game_camera_update_prefix.data(), game_camera_update_prefix.size(), 2881648},
+    AccessPoint{"?Shake@GameCamera@GAME@@QEAAXAEBVViewport@2@HMAEBVWorldVec3@2@_N@Z", game_camera_shake_prefix.data(), game_camera_shake_prefix.size(), 2877392},
+    AccessPoint{"?GetPlayer@GameCamera@GAME@@QEAAPEAVPlayer@2@XZ", get_camera_player_prefix.data(), get_camera_player_prefix.size(), 2876672},
+    AccessPoint{"?GetInputMode@GameEngine@GAME@@QEBA?AW4InputMode@2@XZ", get_input_mode_prefix.data(), get_input_mode_prefix.size(), 3070592},
+    AccessPoint{"?GetMainPlayer@GameEngine@GAME@@QEBAPEAVPlayer@2@XZ", get_main_player_prefix, std::size(get_main_player_prefix), 3062640},
+    AccessPoint{"?AdjustYaw@GameCamera@GAME@@QEAAXM@Z", adjust_yaw_prefix.data(), adjust_yaw_prefix.size(), 2881472},
+    AccessPoint{"?SetCameraYaw@GameCamera@GAME@@UEAAXM@Z", set_game_yaw_prefix, std::size(set_game_yaw_prefix), 2882288},
+    AccessPoint{"?SetZoom@GameCamera@GAME@@QEAAXM@Z", set_zoom_prefix, std::size(set_zoom_prefix), 2882336},
+    AccessPoint{"?SetCameraFOV@GameEngine@GAME@@QEAAXM@Z", set_game_fov_prefix, std::size(set_game_fov_prefix), 3102432},
+    AccessPoint{"?GetControllerDirection@ControllerPlayer@GAME@@QEAAXAEAVVec3@2@@Z", get_controller_direction_prefix, std::size(get_controller_direction_prefix), 1441040},
+    AccessPoint{"?SetControllerDirection@ControllerPlayer@GAME@@QEAAXAEBVVec3@2@@Z", set_controller_direction_prefix, std::size(set_controller_direction_prefix), 1441008},
+    AccessPoint{"?GetGameController@GameEngine@GAME@@QEAAAEAVGameController@2@XZ", get_game_controller_prefix, std::size(get_game_controller_prefix), 3070576},
+    AccessPoint{"?GetActionSet@GameController@GAME@@QEBA?AW4ActionSet@12@XZ", get_action_set_prefix, std::size(get_action_set_prefix), 151520}};
 constexpr std::array engine_access_points{
     AccessPoint{"?GetCoordsUnparented@Entity@GAME@@QEBAAEBVWorldCoords@2@XZ", get_coords_prefix.data(), get_coords_prefix.size(), 48096},
     AccessPoint{"?GetCameraYaw@WorldCamera@GAME@@QEBAMXZ", get_yaw_prefix.data(), get_yaw_prefix.size(), 464416},
-    AccessPoint{"?SetCameraYaw@WorldCamera@GAME@@UEAAXM@Z", set_yaw_prefix, std::size(set_yaw_prefix), 533808},
+    AccessPoint{"?SetCameraYaw@WorldCamera@GAME@@UEAAXM@Z", set_yaw_prefix, std::size(set_yaw_prefix), 533952},
     AccessPoint{"?GetCameraPitch@WorldCamera@GAME@@QEBAMXZ", get_pitch_prefix.data(), get_pitch_prefix.size(), 464448},
-    AccessPoint{"?SetCameraPitch@WorldCamera@GAME@@QEAAXM@Z", set_pitch_prefix.data(), set_pitch_prefix.size(), 2267120},
+    AccessPoint{"?SetCameraPitch@WorldCamera@GAME@@QEAAXM@Z", set_pitch_prefix.data(), set_pitch_prefix.size(), 2268064},
     AccessPoint{"?GetCameraFOV@WorldCamera@GAME@@QEBAMXZ", get_fov_prefix.data(), get_fov_prefix.size(), 464480},
-    AccessPoint{"?SetCameraFOV@WorldCamera@GAME@@QEAAXM@Z", set_fov_prefix.data(), set_fov_prefix.size(), 2267136},
+    AccessPoint{"?SetCameraFOV@WorldCamera@GAME@@QEAAXM@Z", set_fov_prefix.data(), set_fov_prefix.size(), 2268080},
     // Camera-collision chain. Validated like every other access point so an unknown build fails
     // closed rather than calling an address that means something else entirely.
-    AccessPoint{"?GetRegion@WorldCamera@GAME@@QEBAPEAVRegion@2@XZ", get_world_camera_region_prefix, std::size(get_world_camera_region_prefix), 2263712},
-    AccessPoint{"?CalculateViewPosition@WorldCamera@GAME@@MEBA?AVWorldVec3@2@AEBV32@@Z", calculate_view_position_prefix, std::size(calculate_view_position_prefix), 2265552},
-    AccessPoint{"?GetLevelPtr@Region@GAME@@QEBAPEAVLevel@2@XZ", get_region_level_ptr_prefix, std::size(get_region_level_ptr_prefix), 1654688},
-    AccessPoint{"?GetIntersection@Level@GAME@@QEBAXAEBVRay@2@AEAVIntersection@2@W4PhysicsSurface@2@PEAPEAVEntity@2@MPEBV62@_N@Z", get_level_intersection_prefix, std::size(get_level_intersection_prefix), 1244464},
+    AccessPoint{"?GetRegion@WorldCamera@GAME@@QEBAPEAVRegion@2@XZ", get_world_camera_region_prefix, std::size(get_world_camera_region_prefix), 2264656},
+    AccessPoint{"?CalculateViewPosition@WorldCamera@GAME@@MEBA?AVWorldVec3@2@AEBV32@@Z", calculate_view_position_prefix, std::size(calculate_view_position_prefix), 2266496},
+    AccessPoint{"?GetLevelPtr@Region@GAME@@QEBAPEAVLevel@2@XZ", get_region_level_ptr_prefix, std::size(get_region_level_ptr_prefix), 1655632},
+    AccessPoint{"?GetIntersection@Level@GAME@@QEBAXAEBVRay@2@AEAVIntersection@2@W4PhysicsSurface@2@PEAPEAVEntity@2@MPEBV62@_N@Z", get_level_intersection_prefix, std::size(get_level_intersection_prefix), 1245488},
     AccessPoint{"?Get@?$Singleton@VObjectManager@GAME@@@GAME@@SAPEAVObjectManager@2@XZ", object_manager_get_prefix, std::size(object_manager_get_prefix), 114752},
     AccessPoint{"?GetInputDevice@Engine@GAME@@QEAAPEAVInputDevice@2@XZ", get_input_device_prefix, std::size(get_input_device_prefix), 489552},
-    AccessPoint{"?Update@SteamControllerDevice@GAME@@QEAAXH@Z", steam_controller_update_prefix, std::size(steam_controller_update_prefix), 1820016}};
+    AccessPoint{"?Update@SteamControllerDevice@GAME@@QEAAXH@Z", steam_controller_update_prefix, std::size(steam_controller_update_prefix), 1820960},
+    AccessPoint{"?AddToScene@Region@GAME@@QEAAXAEAVGraphicsScene@2@AEBVCoords@2@AEBVFrustum@2@PEBVWorldFrustum@2@@Z", sky_region_prefix, std::size(sky_region_prefix), 1655264},
+    AccessPoint{"??0Skybox@GAME@@QEAA@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z", sky_ctor_prefix, std::size(sky_ctor_prefix), 1775632},
+    AccessPoint{"?AddToScene@Skybox@GAME@@QEBAXPEAVRegion@2@AEBVCoords@2@AEAVGraphicsScene@2@@Z", sky_submit_prefix, std::size(sky_submit_prefix), 1776416}};
+
+constexpr std::array<std::uint8_t, 32> cursor_backend_hash{0x86, 0x2a, 0x9e, 0xf1, 0xe6, 0x76, 0x17, 0xc2, 0x91, 0x22, 0xdc, 0x8b, 0x8b, 0x9c, 0x25, 0xdb, 0xba, 0xfe, 0x2e, 0x51, 0x8e, 0xd9, 0x8c, 0x0b, 0xb5, 0x2b, 0x24, 0xb3, 0x7d, 0x75, 0xab, 0x5b};
+constexpr std::uint8_t cursor_show_prefix[]{0x40, 0x53, 0x48, 0x83, 0xec, 0x20, 0x33, 0xc9, 0x0f, 0xb6, 0xda, 0x84, 0xd2, 0x0f, 0x94, 0xc1};
+constexpr std::uint8_t cursor_present_prefix[]{0x48, 0x89, 0x5c, 0x24, 0x08, 0x48, 0x89, 0x74, 0x24, 0x10, 0x57, 0x48, 0x83, 0xec, 0x20, 0x48};
+constexpr std::array cursor_access_points{
+    AccessPoint{"?ShowHardwareCursor@Direct3DDevice11@GAME@@UEAAX_N@Z", cursor_show_prefix, std::size(cursor_show_prefix), 40752},
+    AccessPoint{"?PresentSurface@Direct3DDevice11@GAME@@UEAAXPEAVRenderSurface@2@@Z", cursor_present_prefix, std::size(cursor_present_prefix), 31808}};
 
 // Exported vtables (data, not code): identity checks for the player controller and its talk-to-NPC state.
 struct DataExport
@@ -454,11 +470,11 @@ struct DataExport
     std::uint32_t rva;
 };
 constexpr std::array engine_data_exports{
-    DataExport{"??_7WinWindow@GAME@@6B@", 3404960}, // 0x33F4A0
+    DataExport{"??_7WinWindow@GAME@@6B@", 3404992}, // 0x33F4C0
     DataExport{"?gEngine@GAME@@3PEAVEngine@1@EA", 4330536}}; // 0x421428
 constexpr std::array game_data_exports{
-    DataExport{"??_7ControllerPlayer@GAME@@6B@", 7009280},
-    DataExport{"??_7ControllerPlayerStateTalkToNpc@GAME@@6B@", 7417624}};
+    DataExport{"??_7ControllerPlayer@GAME@@6B@", 7209808},
+    DataExport{"??_7ControllerPlayerStateTalkToNpc@GAME@@6B@", 7617592}};
 
 void set_last_error(const wchar_t* message) noexcept
 {
@@ -704,7 +720,7 @@ bool guarded_read_mouse_input_mode(void* engine, std::uint32_t& mode) noexcept
     if (engine == nullptr) return false;
     __try
     {
-        mode = *reinterpret_cast<const std::uint32_t*>(static_cast<const std::byte*>(engine) + 0x37718);
+        mode = *reinterpret_cast<const std::uint32_t*>(static_cast<const std::byte*>(engine) + 0x37748);
         return true;
     }
     __except (EXCEPTION_EXECUTE_HANDLER) { mode = 0xFFFFFFFFU; return false; }
@@ -1953,8 +1969,8 @@ void capture_camera_state(void* camera_pointer, const gdtpc::CallbackEvidenceSna
                 const auto dialog_begin = *reinterpret_cast<void* const*>(engine + 0x38);
                 const auto dialog_end = *reinterpret_cast<void* const*>(engine + 0x40);
                 sample.dialog_active = dialog_begin != dialog_end ? 1U : 0U;
-                sample.action_set = *reinterpret_cast<const std::uint32_t*>(engine + 0x376f8);
-                sample.input_mode = *reinterpret_cast<const std::uint32_t*>(engine + 0x37718);
+                sample.action_set = *reinterpret_cast<const std::uint32_t*>(engine + 0x37728);
+                sample.input_mode = *reinterpret_cast<const std::uint32_t*>(engine + 0x37748);
                 sample.view_distance_locked = *reinterpret_cast<const std::uint8_t*>(engine + 0x1b40);
             }
         }
@@ -2272,7 +2288,7 @@ gdtpc::PlayerControllerSample guarded_sample_player_controller(void* player, boo
         sample.controller_vtable = *reinterpret_cast<const std::uintptr_t*>(controller);
         if (sample.controller_vtable == controller_player_vtable)
         {
-            // ControllerAI::GetExecutingState (0x112760): the top temporary state (list head +0x2E8, count +0x2F0, first
+            // ControllerAI::GetExecutingState (0x125A60): the top temporary state (list head +0x2E8, count +0x2F0, first
             // node's state at +0x10) when any exist, otherwise the current state SetState stores at +0x2A0. The first
             // live build read only the temporary list, which is normally empty, and never saw the talk state.
             sample.state_count = *reinterpret_cast<const std::uint64_t*>(controller + 0x2f0);
@@ -3069,8 +3085,7 @@ GDTPC_API GdTpcPhase __cdecl GdTpcInitializeLoggingV2(const wchar_t* log_path, c
 #endif
 #if defined(GDTPC_CAMERA_COLLISION)
             !prepare_cursor_visibility() || !attach_cursor_visibility() ||
-            !prepare_skybox(engine) || sky_submit_hook.attach(reinterpret_cast<void**>(&sky_submit),
-                reinterpret_cast<void*>(&sky_native_submit)) != NO_ERROR || sky_region_hook.attach(reinterpret_cast<void**>(&sky_region_original),
+            !prepare_skybox(engine) || sky_region_hook.attach(reinterpret_cast<void**>(&sky_region_original),
                 reinterpret_cast<void*>(&sky_region_draw)) != NO_ERROR ||
             steam_controller_update_hook.attach(reinterpret_cast<void**>(&steam_controller_update_original),
                 reinterpret_cast<void*>(&steam_controller_update_logging_hook)) != NO_ERROR ||
@@ -3085,7 +3100,6 @@ GDTPC_API GdTpcPhase __cdecl GdTpcInitializeLoggingV2(const wchar_t* log_path, c
 #if defined(GDTPC_CAMERA_COLLISION)
             rollback_cursor_visibility();
             if (sky_region_hook.installed()) static_cast<void>(sky_region_hook.detach());
-            if (sky_submit_hook.installed()) static_cast<void>(sky_submit_hook.detach());
             if (steam_controller_update_hook.installed()) static_cast<void>(steam_controller_update_hook.detach());
 #endif
             // A bounded join keeps the remote initialization thread from blocking forever. On
@@ -3342,6 +3356,7 @@ GdTpcPhase initialize_validation_locked() noexcept
     if (!validate_access_points(game, game_access_points.data(), game_access_points.size()) ||
         !validate_access_points(engine, engine_access_points.data(), engine_access_points.size()) || !validate_engine_slot(game) ||
         !validate_internal_code(game, object_manager_find_rva, object_manager_find_prefix, std::size(object_manager_find_prefix)) ||
+        !validate_internal_code(engine, sky_string_assign_rva, sky_string_assign_prefix, std::size(sky_string_assign_prefix)) ||
         !validate_data_exports(game, game_data_exports.data(), game_data_exports.size()) ||
         !validate_data_exports(engine, engine_data_exports.data(), engine_data_exports.size()))
     {

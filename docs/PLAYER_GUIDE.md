@@ -1,56 +1,16 @@
-# GrimAction skybox test3
-
-This is a GrimAction test package, not a WoW-for-GrimDawn mod update. The cursor fix is preserved. No game installation files or map lighting are changed.
-
-## Confirmed by the user in test2
-
-F8 shows the Northshire sky and restores the black/native view when disabled. Reign of Terror also shows a different sky. The user subsequently confirmed that test3 shows the PathOfGrimDawn sky and prevents the reported camera penetration through the ground.
-
-## Test3 changes
-
-The session log shows 250-unit render far planes in the first two tested worlds and 120 in the third, while fallback submissions continued in all three. The fallback mesh reaches about 166 units, so test3 scales it to fit within 80 percent of the current render far plane. Northshire keeps its own blue sky and its F8-only scale correction, now also respecting the current far plane. Other authored skies are preserved. No sun or lighting changes are added to Reign of Terror. The fallback still relies on the stock GDX3 record and its GDX2 mesh.
-
-Camera collision now tests a 0.6-unit envelope with lower, upper and lateral offset rays instead of only the center ray. This addresses terrain/near-camera intersection at grazing angles. It is an approximation, not a full swept-volume collision solver; geometry without collision can still need map fixes. A regression test covers a center ray that misses flat ground while the camera envelope intersects it.
-
-## Known limitations accepted for this version
-
-- A black band remains near the fallback sky horizon. The stock mesh covers the upper hemisphere and fades at its rim; complete background coverage is not implemented.
-- The user reported F8 and logical Stop failing after returning to the main menu and switching mods. This remains undiagnosed; fully restart the game between mods if it occurs.
-- View distance above 100 percent is not supported.
-
-## Testing
-
-Quit the game fully before switching builds. Extract separately and use Start GrimAction.cmd. Test PathOfGrimDawn's sky at F8, then ground-level camera angles and walls in Northshire and RoT. Check F8 off, menus and the cursor fix. Retain dark map lighting. Sky clouds/sun artwork for WoW is a separate pending change. Automatic indoor classification and per-mod sky profiles are not implemented.
-
-CSV sky_status: 0 idle, 1 fallback queued, 2 unavailable resource, 3 latched fault, 4 another render thread, 5 Northshire correction queued. sky_submissions is cumulative and does not prove rendered pixels. End the game normally or use logical Stop to flush the log. No live game was launched by the developer. Live confirmations were supplied by the user.
-
----
-
-# Cursor visibility test build (unreleased fork)
-
-This build adds conditional cursor hiding for the validated DX11 backend. It does not replace cursor textures and never displays a dot. Run the checks in TEST-MUSEPEKER.md before publishing. Offline tests are not evidence of in-game success.
-
-The existing `mouse_look_dot_cursor` key is retained for INI compatibility but ignored. Leave it false. No new setting is required: F8 mouse capture controls hiding. F8 off, menus, NPC conversation, Alt and loss of focus release it. DX9 remains unchanged. Unknown DX11 binaries are rejected before installing hooks. A stale capture request expires after 250 ms on owner-thread callbacks.
-
-Telemetry adds cursor_visibility (0 released, 1 hidden, 2 no owner-thread application yet, 3 backend unavailable), cursor_owner and cursor_thread. UI detection gaps from upstream still require testing; do not claim every panel is supported.
-
----
-
-# GrimAction: third-person camera for Grim Dawn
+# GrimAction 0.2.4
 
 GrimAction adds an over-the-shoulder, mouse-look camera to Grim Dawn. Movement stays the game's own WASD (or controller)
 movement. Press F8 in game to switch between the normal camera and third person.
 
-Nothing is installed. GrimAction never copies files into the Grim Dawn folder or changes game files (the optional dot
-cursor below is the one exception, and only if you run it). You start it after the game reaches the main menu, and it is
-gone when you quit the game.
+GrimAction runs from its own folder and does not replace game files. Start it after the game reaches the main menu.
+Fully exiting the game removes the loaded runtime.
 
 ## Requirements
 
 - Grim Dawn on Steam, **64-bit**, at the game version this release supports (see "Supported game version" below).
 - Windows 10 or 11, 64-bit.
 - Nothing else. The download includes everything it needs (no .NET install).
-- Optional: the dot cursor (below) replaces the game's hand cursor with an adjustable dot.
 
 ## Install
 
@@ -90,17 +50,19 @@ You need WASD movement: in the game options, turn on movement with the keyboard 
 
 ## Known limits
 
-- **Cursor visibility:** this fork tests conditional hiding during captured DX11 mouse look; see the test-build notes above.
+- **Cursor visibility:** the DX11 cursor is hidden during captured mouse look. See `CURSOR_TEST.md` for the release checks. The legacy dot-cursor setting is ignored.
 - **Controller:** a controller works with the game's own controller camera, and the right stick now also tilts the camera
   up and down (turn it off with `right_stick_pitch_enabled=false`).
 - **After an NPC dialog** the cursor stays free until you move; moving puts it back to mouse look.
 - **Menus not covered:** devotion, blacksmith, rift gates and the death screen don't free the cursor automatically. Hold Left
   Alt.
 - **Occasional hitches** in some outdoor areas (for example the bridge between Lower Crossing and Devil's Crossing). They
-  come from the game loading distant scenery. The default view distance is slightly shortened (95%) to reduce them; see
+  come from the game loading distant scenery. The view-distance setting can reduce scenery loading; see
   `third_person_far_plane_percent`.
 - **Change graphics settings before starting GrimAction**, or restart the game after changing them.
-- **Collision** keeps the camera out of most walls, but some small objects (a pillar, for example) aren't detected.
+- **Collision:** low camera angles can still pass through terrain, and some small objects are not detected. The new downward probes are an improvement under test, not a guarantee of complete ground protection.
+- **Sky:** the fallback background can leave a dark horizon band. It uses stock expansion assets and does not change sunlight or map lighting.
+- **Session changes:** if F8 or logical Stop stops responding after returning to the main menu or changing worlds, fully exit and restart the game.
 - Mouse look is designed for single-player. Use it in multiplayer at your own discretion.
 
 ## Settings
@@ -127,7 +89,7 @@ The settings most people will want:
 | `shoulder_height_units` | 1.5 | 0 to 10 | How high the camera looks over the character |
 | `distance_default` | 42 | between `distance_min` and `distance_max` | Starting zoom |
 | `fov_degrees` | 45 | 30 to 60 | Field of view in third person |
-| `third_person_far_plane_percent` | 95 | 50 to 100 | View distance. Lower reduces hitches and cuts off the horizon sooner; extreme zoom keeps a safety floor so the camera cannot outrun the rendered world. |
+| `third_person_far_plane_percent` | 100 | 50 to 100 | Percentage of native view distance. Lower values can reduce scenery loading. |
 | `right_stick_pitch_enabled` | true | true / false | Controller right stick tilts the camera up and down |
 | `right_stick_pitch_degrees_per_second` | 90 | 10 to 360 | How fast the right stick tilts |
 | `right_stick_pitch_invert` | false | true / false | Flip the right stick's up and down |
@@ -139,33 +101,26 @@ values stop F8 from switching back), `virtual_zoom_engine_distance`, the `collis
 (fixed in this version: F8, starting in the normal camera). `mouse_look_dot_cursor` and `ui_probe_enabled` are reserved for
 features that don't work yet; leave them `false`.
 
-## Legacy dot extras
-
-Not included or used in this test build.
-
 ## Safety and what it does
 
 GrimAction is a DLL that is loaded into the running game (DLL injection) and adjusts the camera each frame. It:
 
 - checks that your installed game files exactly match the version it was built for, and refuses to load otherwise;
-- only changes camera values, and moves the mouse cursor while mouse look is active;
-- never connects to the internet and never changes files on disk, apart from its own log files (the optional dot cursor
-  extra is the one exception, and only when you run it);
+- adjusts the camera, cursor capture and fallback sky rendering while active;
+- keeps session logs locally and does not send telemetry;
 - can't be unloaded while the game runs. Stop turns it off; quitting the game removes it.
 
-The source code is public, and every file in this download is listed with its SHA-256 hash in `bin\package-manifest.json`.
+The source code is public, and the fixed package files are listed with their SHA-256 hashes in `bin\package-manifest.json`.
 
 ## Antivirus
 
-Because GrimAction injects a DLL, some antivirus programs flag it as a "trojan/injector". These are false positives. Please
-don't disable your antivirus. `ANTIVIRUS.md` explains your options, including a narrow exclusion for the GrimAction folder
+Because GrimAction injects a DLL, some antivirus programs flag it as a "trojan/injector". A detection needs investigation; it is not automatically a false positive. Please
+do not disable your antivirus. `ANTIVIRUS.md` explains your options, including a narrow exclusion for the GrimAction folder
 only.
 
 ## Uninstall
 
-If you applied the dot cursor, run `Restore Hand Cursor.cmd` first (or verify game files in Steam). Then delete the
-GrimAction folder. If you added the ReShade dot, delete `ThirdPersonDot.fx` from the ReShade shaders folder. If you added an
-antivirus exclusion, remove it.
+Fully exit Grim Dawn, then delete the GrimAction folder. Remove any antivirus exclusion you previously added for it.
 
 ## Troubleshooting
 
@@ -191,8 +146,8 @@ report a bug, you can attach the log from that session. Delete old logs any time
 
 ## Supported game version
 
-This release supports Grim Dawn Steam build 24825149 (64-bit). When Grim Dawn updates, GrimAction refuses to load until a
-matching release is published.
+Offline compatibility checks pass for the x64 game files identified by `oct2026-d3915e25-x64` in the compatibility manifest. When Grim Dawn updates, GrimAction refuses to load until a
+matching release is published. This release still requires in-game acceptance testing on that patch.
 
 ## License
 

@@ -22,7 +22,7 @@ see [docs/ANTIVIRUS.md](docs/ANTIVIRUS.md). Please don't disable your antivirus.
 
 Player-facing release history is in [CHANGELOG.md](CHANGELOG.md).
 
-Supported game build: Steam 24825149 (x64). When the game updates, GrimAction refuses to load until it's updated.
+Supported game files: the October 2026 x64 patch copied on October 9, identified as `oct2026-d3915e25-x64` in the compatibility manifest. Release 0.2.4 has offline compatibility validation; in-game acceptance is pending. When the game updates, GrimAction refuses to load until it's updated.
 
 ## Contributors
 
@@ -41,8 +41,8 @@ extras/hidden-hand-cursor/  optional dot-cursor replacement for the game's hand 
 third_party/detours   pinned Microsoft Detours 4.0.1 source (MIT)
 ```
 
-Help wanted: hiding the game's hand cursor from inside the runtime, and aim magnetism. See "What doesn't work (yet)" in
-DESIGN.md.
+The DX11 runtime includes conditional cursor hiding. Remaining limitations and contributor work are described in
+[docs/DESIGN.md](docs/DESIGN.md).
 
 ## License
 

@@ -7,3 +7,8 @@ artifacts/
 third_party/detours/bin.X64/
 third_party/detours/lib.X64/
 *.obj
+
+# Local build transcripts and diagnostic exports
+/build-*.log
+/package-*.log
+/skybox-coverage.json

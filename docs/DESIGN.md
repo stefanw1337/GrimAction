@@ -1,7 +1,7 @@
 # GrimAction design overview
 
 This is a summary for contributors: what the runtime does, how it's put together, and the rules it follows. Grim Dawn
-internals below are for the one supported build (Steam 24825149, x64). Every address is checked at load, and a mismatch
+internals below are for the one supported build (October 2026 patch, x64; oct2026-d3915e25-x64). Every address is checked at load, and a mismatch
 refuses to load.
 
 Some source comments cite sections of `IMPLEMENTATION_PLAN.md`. That working plan and its session logs aren't published; this

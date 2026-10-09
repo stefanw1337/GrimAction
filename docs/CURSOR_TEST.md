@@ -1,15 +1,15 @@
-# Test av musepeker — før publisering
+# Cursor test before release
 
-Dette er en lokal testversjon. Ingen fork er publisert.
+Release 0.2.4 requires in-game acceptance on the supported patch.
 
-1. Avslutt spillet helt dersom gammel GrimAction er lastet inn. Ikke start begge versjoner i samme spilløkt.
-2. Start Grim Dawn i DirectX 11 og vent til hovedmenyen.
-3. Start denne pakkens «Start GrimAction.cmd» én gang. Ikke kopier DLL-en inn i spillmappen.
-4. I verden: F8 på skal skjule pekeren helt. Ingen prikk. F8 av skal vise vanlig peker igjen.
-5. Test Escape, inventory og NPC-samtale mens F8 er på. Pekeren skal vises og kunne klikke. Ved retur til aktiv kamerastyring skal den skjules igjen.
-6. Hold Alt: pekeren skal vises. Slipp Alt: skjult igjen. Test også Alt-Tab og tilbake.
-7. Gjenta F8 av/på flere ganger. Test «Stop GrimAction.cmd» mens pekeren er skjult.
+1. Fully exit Grim Dawn if another GrimAction build was loaded. Do not start two builds in the same game session.
+2. Start Grim Dawn in DirectX 11 and wait for the main menu.
+3. Run this package's **Start GrimAction.cmd** once. Keep the runtime DLL in this package, outside the game folder.
+4. Enter the world. F8 on should hide the cursor completely, with no dot. F8 off should restore the normal cursor.
+5. Open Escape, inventory, map and an NPC conversation while F8 is on. The cursor should appear and allow clicking. It should hide again when camera control resumes.
+6. Hold Alt to show the cursor; release Alt to hide it. Also test switching away from the game and back.
+7. Toggle F8 several times. Test **Stop GrimAction.cmd** while the cursor is hidden.
 
-Ved feil: noter hvilket steg som feiler og behold CSV-filen i logs. cursor_visibility=1 betyr at skjuling ble forsøkt på riktig tråd, ikke at et skjermbilde har bekreftet resultatet. Normal avslutning av spillet fjerner den innlastede test-DLL-en. Start en ny økt med gammel GrimAction for å gå tilbake.
+If something fails, record the step and keep the CSV file in logs. A cursor_visibility value of 1 means that hiding was attempted on the expected thread; it does not prove the visual result. Fully exiting the game removes the loaded runtime. An older GrimAction package will only work with its matching game patch.
 
-Forventede begrensninger: DX9 er ikke endret. Upstream dekker ikke automatisk alle vinduer (bl.a. devotion, blacksmith, rift gates og death screen); Alt frigjør pekeren. Test disse også før publisering. Vi må ikke markedsføre støtte som ikke er bekreftet.
+Known limitations: DX9 is unchanged. Detection of devotion, blacksmith, rift gates, death screens and other panels is not fully verified. Alt releases the cursor. Test these panels before treating the build as accepted. Fully restart the game after world changes if camera controls stop responding.

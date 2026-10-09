@@ -30,6 +30,7 @@ function Invoke-BuildStep {
 }
 
 Assert-GameClosed -Step 'start'
+& (Join-Path $PSScriptRoot 'Test-SupportedBuild.ps1') -GameRoot $GameRoot
 if ($UiProbe -and -not $CameraCollision) { throw '-UiProbe requires -CameraCollision.' }
 
 # [System.IO.Path]::GetRelativePath does not exist on Windows PowerShell 5.1, so the release
@@ -95,7 +96,7 @@ $formatColumns = [Regex]::Matches($formatMatch.Groups[1].Value, '%(?!%)(?:[-+ #0
 if ($headerColumns -ne $formatColumns) { throw "Telemetry schema mismatch: header has $headerColumns columns but format has $formatColumns fields." }
 Write-Output "PASS: telemetry header and format both contain $headerColumns columns."
 $supported = (Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json).builds[0]
-foreach ($hash in @($supported.executableSha256, $supported.modules[0].sha256, $supported.modules[1].sha256)) {
+foreach ($hash in (@($supported.executableSha256) + @($supported.modules | ForEach-Object { $_.sha256 }))) {
     $bytes = (($hash -split '(..)' | Where-Object { $_ }) | ForEach-Object { '0x' + $_.ToLowerInvariant() }) -join ', '
     if (-not $runtimeText.Contains($bytes)) { throw "Native hash constants drifted from supported-builds.json: $hash" }
 }

@@ -70,6 +70,20 @@ internal static class BuildValidator
             if (offset > image.Length - prefix.Length || !image.AsSpan(offset, prefix.Length).SequenceEqual(prefix))
                 throw new InvalidDataException($"{spec.File}!{expected.Name} failed code-prefix validation.");
         }
+        foreach (var expected in spec.DataExports ?? [])
+        {
+            if (!exports.TryGetValue(expected.Name, out var actualRva) || actualRva != expected.Rva)
+                throw new InvalidDataException($"{spec.File}!{expected.Name} failed data-export validation.");
+        }
+        foreach (var expected in spec.InternalCode ?? [])
+        {
+            byte[] prefix;
+            try { prefix = Convert.FromHexString(expected.PrefixHex); }
+            catch (FormatException ex) { throw new InvalidDataException($"Invalid internal prefix for {expected.Name}.", ex); }
+            var offset = RvaToOffset(checked((int)expected.Rva), headers);
+            if (prefix.Length == 0 || offset > image.Length - prefix.Length || !image.AsSpan(offset, prefix.Length).SequenceEqual(prefix))
+                throw new InvalidDataException($"{spec.File}!{expected.Name} failed internal-code validation.");
+        }
     }
 
     private static Dictionary<string, uint> ReadExports(byte[] image, PEHeaders headers)
@@ -149,6 +163,8 @@ internal static class BuildValidator
     private sealed record Options(string GameRoot, string ManifestPath);
     private sealed record Manifest(int SchemaVersion, IReadOnlyList<BuildSpec> Builds);
     private sealed record BuildSpec(string Id, string ExecutableSha256, IReadOnlyList<ModuleSpec> Modules);
-    private sealed record ModuleSpec(string File, string Sha256, IReadOnlyList<ExportSpec> Exports);
+    private sealed record ModuleSpec(string File, string Sha256, IReadOnlyList<ExportSpec> Exports,
+        IReadOnlyList<ExportSpec>? InternalCode = null, IReadOnlyList<DataExportSpec>? DataExports = null);
+    private sealed record DataExportSpec(string Name, uint Rva);
     private sealed record ExportSpec(string Name, uint Rva, string PrefixHex);
 }

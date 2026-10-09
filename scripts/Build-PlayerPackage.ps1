@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    # An immutable, live-accepted camera-collision release (artifacts\releases\collision\<id>).
+    # An immutable, offline-validated camera-collision release; live status is documented in the guide (artifacts\releases\collision\<id>).
     [Parameter(Mandatory = $true)][string]$ReleasePath,
     # Player-facing version, e.g. 0.1.0.
     [Parameter(Mandatory = $true)][ValidatePattern('^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$')][string]$Version
@@ -25,6 +25,9 @@ function Get-RelativePath([string]$Root, [string]$FullName) {
 }
 
 Assert-GameClosed 'start'
+$guideHeading = Get-Content -LiteralPath (Join-Path $projectRoot 'docs\PLAYER_GUIDE.md') -TotalCount 1
+if ($guideHeading -ne "# GrimAction $Version") { throw "Player guide version does not match package $Version." }
+
 $release = [System.IO.Path]::GetFullPath($ReleasePath)
 $releaseId = Split-Path -Leaf $release
 & (Join-Path $PSScriptRoot 'Test-ReleaseManifest.ps1') -ReleasePath $release -ExpectedGate 2 -ExpectedVariant 'camera-collision' -ExpectedGameStateWritesEnabled 1
@@ -58,11 +61,11 @@ Copy-Item -LiteralPath (Join-Path $projectRoot 'package\Stop-GrimAction.ps1') -D
 Copy-Item -LiteralPath (Join-Path $projectRoot 'package\Start GrimAction.cmd') -Destination $stage
 Copy-Item -LiteralPath (Join-Path $projectRoot 'package\Stop GrimAction.cmd') -Destination $stage
 Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\PLAYER_GUIDE.md') -Destination (Join-Path $stage 'README.md')
-Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\CURSOR_TEST.md') -Destination (Join-Path $stage 'TEST-MUSEPEKER.md')
+Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\CURSOR_TEST.md') -Destination (Join-Path $stage 'CURSOR_TEST.md')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\ANTIVIRUS.md') -Destination (Join-Path $stage 'ANTIVIRUS.md')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSE') -Destination (Join-Path $stage 'LICENSE.txt')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'THIRD-PARTY-NOTICES.txt') -Destination $stage
-# Settings are the release's live-accepted file with a short header; the player may edit them, so they are not hashed.
+# Settings are the release's offline-validated file with a short header; the player may edit them, so they are not hashed.
 $utf8 = [System.Text.UTF8Encoding]::new($false)
 $settingsHeader = "; GrimAction settings. Edit values, save, then run Start GrimAction. Every key must stay present.`r`n; Ranges and meanings: README.md, section Settings. A copy of the original is in settings\runtime.default.ini.`r`n"
 $releaseSettings = [System.IO.File]::ReadAllText((Join-Path $release 'runtime.ini'))

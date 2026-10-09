@@ -4,6 +4,7 @@
 #define NOMINMAX
 #include <windows.h>
 
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 
@@ -259,6 +260,31 @@ bool gdtpc::WindowsLevelQuery::raycast_from_camera(const float max_distance, flo
             float hit{}; std::memcpy(&hit,intersection,sizeof(hit));
             if (std::isnan(hit) || hit<0) { ++refused_; return false; }
             if (hit<distance) distance=hit;
+        }
+    }
+    if (clearance_ > 0.0F) {
+        // Parallel rays starting below a one-sided terrain surface report misses.
+        // Probe downward from the focus height along the candidate arm as well.
+        // Stop at the last clear sample, rather than allow the eye below the floor.
+        const float candidate = std::min(distance, max_distance);
+        if (!std::isfinite(candidate) || candidate < 0.0F) { ++refused_; return false; }
+        constexpr int samples = 12;
+        for (int i = 1; i <= samples; ++i) {
+            const float arm = candidate * static_cast<float>(i) / samples;
+            const CollisionVec3 eye{ray.origin.x + ray.direction.x * arm,
+                ray.origin.y + ray.direction.y * arm, ray.origin.z + ray.direction.z * arm};
+            const float top = std::max(ray.origin.y, eye.y) + clearance_ + 0.25F;
+            EngineRay down{{eye.x, top, eye.z}, {0.0F, -1.0F, 0.0F}};
+            const float depth = top - eye.y + clearance_;
+            if (!guarded_intersection(*entries_, level, down, intersection, surface_, depth, ignore_entity_)) {
+                ++refused_; return false;
+            }
+            float hit{}; std::memcpy(&hit, intersection, sizeof(hit));
+            if (std::isnan(hit) || hit < 0.0F) { ++refused_; return false; }
+            if (std::isfinite(hit) && top - hit > eye.y - clearance_ + 0.001F) {
+                distance = std::min(distance, candidate * static_cast<float>(i - 1) / samples);
+                break;
+            }
         }
     }
     return true;

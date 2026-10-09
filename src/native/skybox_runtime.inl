@@ -10,7 +10,6 @@ SkyConstruct sky_construct{};
 SkySubmit sky_submit{};
 SkyStringAssign sky_string_assign{};
 gdtpc::DetourHook sky_region_hook;
-gdtpc::DetourHook sky_submit_hook;
 std::atomic<std::uint64_t> sky_tick{0};
 std::atomic<DWORD> sky_thread{0};
 alignas(16) unsigned char sky_storage[64]{}; // native Skybox has one owned mesh pointer
@@ -26,7 +25,7 @@ bool sky_guarded_submit(void* region, void* scene) noexcept {
                 control_stop_requested.load(std::memory_order_acquire) == 0,
             camera_mode.load(std::memory_order_acquire) == 1,
             *reinterpret_cast<unsigned*>(s + 0x10) == 0,
-            *reinterpret_cast<void**>(world + 0x2e8) == region,
+            *reinterpret_cast<void**>(world + 0x2a0) == region,
             *reinterpret_cast<void**>(r + 0x198) != nullptr ||
                 *reinterpret_cast<std::size_t*>(r + 0x188) != 0,
             GetTickCount64(), sky_tick.load(std::memory_order_acquire))) return false;
@@ -74,38 +73,6 @@ void __fastcall sky_region_draw(void* region, void* scene, const void* coords,
     if (sky_thread.load() != thread) { sky_status.store(4); return; }
     static_cast<void>(sky_guarded_submit(region,scene));
 }
-// Northshire already has a valid blue unit sphere but its record scales it to
-// 1000, beyond the observed 250-unit far plane. Adjust only its submitted basis
-// while F8 is active. The native object, record, and lighting are not modified.
-bool northshire_sky_coords(void* region, const void* input, float* output) noexcept {
-    __try {
-        if (phase.load(std::memory_order_acquire) != GdTpcPhase::logging_active ||
-            control_stop_requested.load(std::memory_order_acquire) != 0 ||
-            camera_mode.load(std::memory_order_acquire) != 1) return false;
-        const auto now=GetTickCount64(), tick=sky_tick.load(std::memory_order_acquire);
-        if (tick==0 || now<tick || now-tick>250) return false;
-        auto* record=static_cast<unsigned char*>(region)+0x178;
-        const auto length=*reinterpret_cast<const std::size_t*>(record+16);
-        const auto capacity=*reinterpret_cast<const std::size_t*>(record+24);
-        const char* text=capacity<16 ? reinterpret_cast<const char*>(record) :
-            *reinterpret_cast<const char* const*>(record);
-        if (!gdtpc::northshire_sky_record(text,length)) return false;
-        std::memcpy(output,input,12*sizeof(float));
-        const float scale=gdtpc::skybox_radius_scale(sky_far_plane.load(std::memory_order_acquire),1000.0F,150.0F);
-        if (scale<=0) return false;
-        for (unsigned i=0;i<9;++i) output[i]*=scale;
-        return true;
-    } __except(EXCEPTION_EXECUTE_HANDLER) { return false; }
-}
-void __fastcall sky_native_submit(const void* sky, void* region, const void* coords, void* scene) noexcept {
-    float adjusted[12]{};
-    const bool corrected=northshire_sky_coords(region,coords,adjusted);
-    sky_submit(sky,region,corrected ? adjusted : coords,scene);
-    if (corrected) {
-        sky_status.store(5,std::memory_order_relaxed);
-        sky_submissions.fetch_add(1,std::memory_order_relaxed);
-    }
-}
 bool prepare_skybox(HMODULE engine) noexcept {
     const auto base=reinterpret_cast<std::uintptr_t>(engine);
     sky_region_original=reinterpret_cast<SkyRegionDraw>(GetProcAddress(engine,
@@ -114,16 +81,12 @@ bool prepare_skybox(HMODULE engine) noexcept {
         "??0Skybox@GAME@@QEAA@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z"));
     sky_submit=reinterpret_cast<SkySubmit>(GetProcAddress(engine,
         "?AddToScene@Skybox@GAME@@QEBAXPEAVRegion@2@AEBVCoords@2@AEAVGraphicsScene@2@@Z"));
-    sky_string_assign=reinterpret_cast<SkyStringAssign>(base+0x23180);
-    const unsigned char draw[]{0x48,0x89,0x5c,0x24,0x10,0x48,0x89,0x6c,0x24,0x18,0x57,0x48,0x83,0xec,0x50,0x0f};
-    const unsigned char ctor[]{0x48,0x8b,0xc4,0x48,0x89,0x50,0x10,0x55,0x56,0x57,0x41,0x56,0x41,0x57,0x48,0x8d};
-    const unsigned char submit[]{0x48,0x89,0x5c,0x24,0x08,0x48,0x89,0x74,0x24,0x10,0x57,0x48,0x83,0xec,0x20,0x48};
-    const unsigned char assign[]{0x48,0x89,0x5c,0x24,0x08,0x48,0x89,0x74,0x24,0x10,0x48,0x89,0x7c,0x24,0x18,0x41};
-    return reinterpret_cast<std::uintptr_t>(sky_region_original)==base+0x193e30 &&
-        reinterpret_cast<std::uintptr_t>(sky_construct)==base+0x1b1460 &&
-        reinterpret_cast<std::uintptr_t>(sky_submit)==base+0x1b1770 &&
-        std::memcmp(reinterpret_cast<void*>(sky_region_original),draw,sizeof(draw))==0 &&
-        std::memcmp(reinterpret_cast<void*>(sky_construct),ctor,sizeof(ctor))==0 &&
-        std::memcmp(reinterpret_cast<void*>(sky_submit),submit,sizeof(submit))==0 &&
-        std::memcmp(reinterpret_cast<void*>(sky_string_assign),assign,sizeof(assign))==0;
+    sky_string_assign=reinterpret_cast<SkyStringAssign>(base+sky_string_assign_rva);
+    return reinterpret_cast<std::uintptr_t>(sky_region_original)==base+0x1941e0 &&
+        reinterpret_cast<std::uintptr_t>(sky_construct)==base+0x1b1810 &&
+        reinterpret_cast<std::uintptr_t>(sky_submit)==base+0x1b1b20 &&
+        std::memcmp(reinterpret_cast<void*>(sky_region_original),sky_region_prefix,sizeof(sky_region_prefix))==0 &&
+        std::memcmp(reinterpret_cast<void*>(sky_construct),sky_ctor_prefix,sizeof(sky_ctor_prefix))==0 &&
+        std::memcmp(reinterpret_cast<void*>(sky_submit),sky_submit_prefix,sizeof(sky_submit_prefix))==0 &&
+        std::memcmp(reinterpret_cast<void*>(sky_string_assign),sky_string_assign_prefix,sizeof(sky_string_assign_prefix))==0;
 }

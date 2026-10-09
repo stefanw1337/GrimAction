@@ -2,6 +2,24 @@
 
 All notable player-facing changes to GrimAction are recorded here.
 
+## 0.2.4 - 2026-10-09
+
+### Changed
+
+- Updated game-file fingerprints, native hook addresses and input/controller offsets for the supported October x64 game build.
+- Extended offline validation to the DX11 cursor backend, sky renderer and internal helper routines.
+- Removed project-specific sky handling; authored sky rendering is left to the game.
+- Replaced development test notes with an English player guide.
+
+### Camera collision
+
+- Added downward clearance probes for one-sided ground surfaces. Low-angle terrain penetration remains a known limitation and requires further in-game testing.
+
+### Validation
+
+- Exact game-file and native entry-point checks remain required. Compatibility with unverified patches is not claimed.
+- In-game acceptance of this release is pending. A dark fallback horizon band and camera/Stop failures after world changes remain known limitations.
+
 ## 0.2.0 - 2026-09-15
 
 ### Added
